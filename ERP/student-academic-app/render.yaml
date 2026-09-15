@@ -3,7 +3,7 @@ services:
     name: academic-erp-api
     runtime: node
     plan: free
-    rootDir: student-academic-app/backend
+    rootDir: backend
     buildCommand: npm install
     startCommand: node src/index.js
     envVars:
