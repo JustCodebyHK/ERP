@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: academic-erp-api
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node src/index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "4000"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: academic-erp-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        value: "https://your-app-domain.com"
+
+databases:
+  - name: academic-erp-db
+    databaseName: academic_erp
+    user: academic_user
+    plan: free
+    postgresMajorVersion: 16
