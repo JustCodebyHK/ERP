@@ -57,4 +57,12 @@ function isOptionalString(value, maxLen = 500) {
   return { valid: true };
 }
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString };
+function isPositiveInteger(value) {
+  const num = Number(value);
+  if (!Number.isInteger(num) || num <= 0) {
+    return { valid: false, error: 'Value must be a positive integer' };
+  }
+  return { valid: true };
+}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger };
