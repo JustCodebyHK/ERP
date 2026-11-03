@@ -5,6 +5,7 @@ const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 const db = require('../db');
 const { authRequired, requireRole } = require('../middleware/auth');
+const { validateUploadedFile } = require('../middleware/fileValidation');
 
 const router = express.Router();
 
@@ -22,19 +23,6 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   limits: { fileSize: 25 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => {
-    const allowed = [
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'application/vnd.ms-powerpoint',
-      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-      'text/plain',
-      'image/jpeg',
-      'image/png',
-    ];
-    cb(null, allowed.includes(file.mimetype));
-  },
 });
 
 // Helper: determine assignment status for a student
@@ -246,6 +234,14 @@ router.post(
 
       const file = req.file;
       if (!file) return res.status(400).json({ error: 'File required' });
+
+      // Validate magic bytes + extension (F-009)
+      await new Promise((resolve, reject) => {
+        validateUploadedFile(req, file, (err) => {
+          if (err) return reject(err);
+          resolve();
+        });
+      });
 
       const now = new Date();
       const status = now > new Date(a.due_at) ? 'late' : 'submitted';
