@@ -98,4 +98,7 @@ function isTeacherId(value) {  const num = Number(value); if (!Number.isInteger(
 
 function isParentId(value) {  const num = Number(value); if (!Number.isInteger(num) || num <= 0 || num > 999999) { return { valid: false, error: 'Invalid parent ID' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};}; };
+
+function isGroupId(value) {  const num = Number(value); if (!Number.isInteger(num) || num <= 0) { return { valid: false, error: 'Invalid group ID' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};}; };
