@@ -1,4 +1,4 @@
-// Input validation middleware for student-academic-app backend
+﻿// Input validation middleware for student-academic-app backend
 // All validators return { valid: boolean, error?: string }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -88,4 +88,8 @@ function validateBody(rules) {
   };
 }
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody };
+
+
+function isStudentId(value) {  const num = Number(value); if (!Number.isInteger(num) || num <= 0 || num > 999999) { return { valid: false, error: 'Invalid student ID' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody}; };
