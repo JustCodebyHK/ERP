@@ -119,4 +119,7 @@ function isBatchId(value) {  const num = Number(value); if (!Number.isInteger(nu
 
 function isYear(value) {  const num = Number(value); if (!Number.isInteger(num) || num < 2020 || num > 2030) { return { valid: false, error: 'Invalid year' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};}; };
+
+function isSemester(value) {  if (!['odd', 'even'].includes(value)) { return { valid: false, error: 'Semester must be odd or even' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};}; };
