@@ -203,4 +203,7 @@ function isRating(value) {  const n = Number(value); if (!Number.isInteger(n) ||
 
 function isGrade(value) {  if (!['A+','A','B+','B','C+','C','D','F'].includes(value)) { return { valid: false, error: 'Invalid grade' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isAttendance(value) {  if (!['present','absent','late'].includes(value)) { return { valid: false, error: 'Invalid attendance' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
