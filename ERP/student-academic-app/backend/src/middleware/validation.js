@@ -317,4 +317,7 @@ function isSlug(value) {  if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(value)) { return 
 
 function isUsername(value) {  if (!/^[a-zA-Z0-9_]{3,30}$/.test(value)) { return { valid: false, error: 'Invalid username' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isDisplayName(value) {  if (typeof value !== 'string' || value.length < 2 || value.length > 50) { return { valid: false, error: 'Invalid display name' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
