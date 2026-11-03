@@ -5,6 +5,7 @@ const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 const db = require('../db');
 const { authRequired, requireRole } = require('../middleware/auth');
+const { validateUploadedFile } = require('../middleware/fileValidation');
 
 const router = express.Router();
 
@@ -24,20 +25,6 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   limits: { fileSize: 25 * 1024 * 1024 }, // 25 MB
-  fileFilter: (req, file, cb) => {
-    // Allow common doc types; tighten for prod
-    const allowed = [
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'application/vnd.ms-powerpoint',
-      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-      'text/plain',
-      'image/jpeg',
-      'image/png',
-    ];
-    cb(null, allowed.includes(file.mimetype));
-  },
 });
 
 // POST /api/notes — teacher upload
@@ -48,10 +35,22 @@ router.post(
   upload.single('file'),
   async (req, res, next) => {
     try {
-      const { subject_id, title } = req.body;
       const file = req.file;
-      if (!subject_id || !title || !file) {
-        return res.status(400).json({ error: 'subject_id, title, and file are required' });
+      if (!file) {
+        return res.status(400).json({ error: 'File is required' });
+      }
+      // Validate magic bytes + extension (F-009)
+      await new Promise((resolve, reject) => {
+        validateUploadedFile(req, file, (err) => {
+          if (err) return reject(err);
+          resolve();
+        });
+      });
+
+      const { subject_id, title } = req.body;
+      if (!subject_id || !title) {
+        fs.unlink(file.path, () => {});
+        return res.status(400).json({ error: 'subject_id and title are required' });
       }
 
       // Teacher must be assigned to this subject in at least one active batch
@@ -75,7 +74,7 @@ router.post(
       );
       res.status(201).json({ note: result.rows[0] });
     } catch (err) {
-      // If DB insert fails, remove the file
+      // If DB insert fails or validation fails, remove the file
       if (req.file) fs.unlink(req.file.path, () => {});
       next(err);
     }
@@ -170,12 +169,21 @@ router.get('/:id/download', authRequired, async (req, res, next) => {
       return res.status(403).json({ error: 'Not enrolled/assigned to this subject' });
     }
 
-    if (!fs.existsSync(note.file_path)) {
-      return res.status(404).json({ error: 'File missing on server' });
+    let targetPath = note.file_path;
+    if (!fs.existsSync(targetPath)) {
+      const fallback = path.join(UPLOAD_DIR, path.basename(note.file_path));
+      if (fs.existsSync(fallback)) {
+        targetPath = fallback;
+      }
+    }
+
+    if (!fs.existsSync(targetPath)) {
+      console.error('File not found:', note.file_path, 'fallback:', path.join(UPLOAD_DIR, path.basename(note.file_path)), 'UPLOAD_DIR:', UPLOAD_DIR);
+      return res.status(404).json({ error: 'File missing on server. Re-upload the note.' });
     }
     res.setHeader('Content-Type', note.mime_type || 'application/octet-stream');
     res.setHeader('Content-Disposition', `attachment; filename="${note.original_name}"`);
-    fs.createReadStream(note.file_path).pipe(res);
+    fs.createReadStream(targetPath).pipe(res);
   } catch (err) {
     next(err);
   }
