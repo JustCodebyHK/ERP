@@ -5,6 +5,7 @@ const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 const db = require('../db');
 const { authRequired, requireRole } = require('../middleware/auth');
+const { validateUploadedFile } = require('../middleware/fileValidation');
 
 const router = express.Router();
 
@@ -22,19 +23,6 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage,
   limits: { fileSize: 25 * 1024 * 1024 },
-  fileFilter: (req, file, cb) => {
-    const allowed = [
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'application/vnd.ms-powerpoint',
-      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-      'text/plain',
-      'image/jpeg',
-      'image/png',
-    ];
-    cb(null, allowed.includes(file.mimetype));
-  },
 });
 
 // POST /api/submission-kit — teacher upload new template version
@@ -45,12 +33,25 @@ router.post(
   upload.single('file'),
   async (req, res, next) => {
     try {
-      const { type, title } = req.body;
       const file = req.file;
-      if (!type || !title || !file) {
-        return res.status(400).json({ error: 'type, title, and file required' });
+      if (!file) {
+        return res.status(400).json({ error: 'File is required' });
+      }
+      // Validate magic bytes + extension (F-009)
+      await new Promise((resolve, reject) => {
+        validateUploadedFile(req, file, (err) => {
+          if (err) return reject(err);
+          resolve();
+        });
+      });
+
+      const { type, title } = req.body;
+      if (!type || !title) {
+        fs.unlink(file.path, () => {});
+        return res.status(400).json({ error: 'type and title are required' });
       }
       if (!['front_page', 'index_page', 'certificate'].includes(type)) {
+        fs.unlink(file.path, () => {});
         return res.status(400).json({ error: 'Invalid type' });
       }
 
@@ -131,12 +132,20 @@ router.get('/:id/download', authRequired, async (req, res, next) => {
       return res.status(403).json({ error: 'Only current version available' });
     }
 
-    if (!fs.existsSync(t.file_path)) {
+    let targetPath = t.file_path;
+    if (!fs.existsSync(targetPath)) {
+      const fallback = path.join(UPLOAD_DIR, path.basename(t.file_path));
+      if (fs.existsSync(fallback)) {
+        targetPath = fallback;
+      }
+    }
+
+    if (!fs.existsSync(targetPath)) {
       return res.status(404).json({ error: 'File missing on server' });
     }
     res.setHeader('Content-Type', t.mime_type || 'application/octet-stream');
     res.setHeader('Content-Disposition', `attachment; filename="${t.original_name}"`);
-    fs.createReadStream(t.file_path).pipe(res);
+    fs.createReadStream(targetPath).pipe(res);
   } catch (err) {
     next(err);
   }
