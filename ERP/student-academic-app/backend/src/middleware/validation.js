@@ -185,4 +185,7 @@ function isSortOrder(value) {  if (!['asc','desc'].includes(value)) { return { v
 
 function isLanguage(value) {  if (!['en','es','fr'].includes(value)) { return { valid: false, error: 'Unsupported language' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isTimezone(value) {  try { Intl.DateTimeFormat(undefined, { timeZone: value }); return { valid: true }; } catch { return { valid: false, error: 'Invalid timezone' }; }}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
