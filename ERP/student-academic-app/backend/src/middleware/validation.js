@@ -281,4 +281,7 @@ function isFileExtension(value) {  const ext = value.split('.').pop().toLowerCas
 
 function isBase64(value) {  if (!/^[A-Za-z0-9+/]+={0,2}$/.test(value)) { return { valid: false, error: 'Invalid base64' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isJson(value) {  try { JSON.parse(value); return { valid: true }; } catch { return { valid: false, error: 'Invalid JSON' }; }}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
