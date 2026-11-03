@@ -326,4 +326,7 @@ function isBio(value) {  if (typeof value !== 'string' || value.length > 500) { 
 
 function isWebsite(value) {  try { new URL(value); return { valid: true }; } catch { return { valid: false, error: 'Invalid website' }; }}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isTwitterHandle(value) {  if (!/^@[a-zA-Z0-9_]{1,15}$/.test(value)) { return { valid: false, error: 'Invalid twitter handle' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
