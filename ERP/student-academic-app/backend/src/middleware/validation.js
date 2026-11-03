@@ -224,4 +224,7 @@ function isLevel(value) {  const n = Number(value); if (!Number.isInteger(n) || 
 
 function isScore(value) {  const n = Number(value); if (!Number.isFinite(n) || n < 0 || n > 100) { return { valid: false, error: 'Score must be 0-100' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isWeight(value) {  const n = Number(value); if (!Number.isFinite(n) || n < 0 || n > 1) { return { valid: false, error: 'Weight must be 0-1' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
