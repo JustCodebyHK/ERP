@@ -167,4 +167,7 @@ function isEnum(value) {  const allowed = ['active','inactive','archived']; if (
 
 function isHexColor(value) {  if (!/^#[0-9A-Fa-f]{6}$/.test(value)) { return { valid: false, error: 'Invalid hex color' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isUuid(value) {  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(value)) { return { valid: true }; } return { valid: false, error: 'Invalid UUID' }}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
