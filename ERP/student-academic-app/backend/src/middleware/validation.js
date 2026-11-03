@@ -158,4 +158,7 @@ function isFutureDate(value) {  const d = new Date(value); if (d <= new Date()) 
 
 function isPastDate(value) {  const d = new Date(value); if (d >= new Date()) { return { valid: false, error: 'Date must be in the past' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isBoolean(value) {  if (typeof value !== 'boolean') { return { valid: false, error: 'Value must be boolean' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};}; };
