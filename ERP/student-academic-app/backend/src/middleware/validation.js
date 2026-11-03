@@ -182,4 +182,7 @@ function isOffset(value) {  const n = Number(value); if (!Number.isInteger(n) ||
 
 function isSortOrder(value) {  if (!['asc','desc'].includes(value)) { return { valid: false, error: 'Sort order must be asc or desc' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isLanguage(value) {  if (!['en','es','fr'].includes(value)) { return { valid: false, error: 'Unsupported language' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
