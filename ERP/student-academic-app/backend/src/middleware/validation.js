@@ -191,4 +191,7 @@ function isTimezone(value) {  try { Intl.DateTimeFormat(undefined, { timeZone: v
 
 function isCurrency(value) {  if (!/^[A-Z]{3}$/.test(value)) { return { valid: false, error: 'Invalid currency code' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isAmount(value) {  const n = Number(value); if (!Number.isFinite(n) || n < 0) { return { valid: false, error: 'Invalid amount' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
