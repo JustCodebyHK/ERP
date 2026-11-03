@@ -209,4 +209,7 @@ function isAttendance(value) {  if (!['present','absent','late'].includes(value)
 
 function isStatus(value) {  if (!['pending','approved','rejected'].includes(value)) { return { valid: false, error: 'Invalid status' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isPriority(value) {  if (!['low','medium','high'].includes(value)) { return { valid: false, error: 'Invalid priority' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
