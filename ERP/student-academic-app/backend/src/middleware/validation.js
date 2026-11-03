@@ -170,4 +170,7 @@ function isHexColor(value) {  if (!/^#[0-9A-Fa-f]{6}$/.test(value)) { return { v
 
 function isUuid(value) {  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(value)) { return { valid: true }; } return { valid: false, error: 'Invalid UUID' }}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isPort(value) {  const p = Number(value); if (!Number.isInteger(p) || p < 1 || p > 65535) { return { valid: false, error: 'Invalid port' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
