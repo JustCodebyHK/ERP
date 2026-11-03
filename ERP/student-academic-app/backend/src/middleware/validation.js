@@ -164,4 +164,7 @@ function isBoolean(value) {  if (typeof value !== 'boolean') { return { valid: f
 
 function isEnum(value) {  const allowed = ['active','inactive','archived']; if (!allowed.includes(value)) { return { valid: false, error: 'Invalid status' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isHexColor(value) {  if (!/^#[0-9A-Fa-f]{6}$/.test(value)) { return { valid: false, error: 'Invalid hex color' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};}; };
