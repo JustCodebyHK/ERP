@@ -131,4 +131,7 @@ function isPhone(value) {  if (!/^[0-9]{10}$/.test(value)) { return { valid: fal
 
 function isAddress(value) {  if (typeof value !== 'string' || value.length > 200) { return { valid: false, error: 'Address must not exceed 200 characters' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};}; };
+
+function isCity(value) {  if (typeof value !== 'string' || value.length > 50) { return { valid: false, error: 'City must not exceed 50 characters' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};}; };
