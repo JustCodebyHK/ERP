@@ -122,4 +122,7 @@ function isYear(value) {  const num = Number(value); if (!Number.isInteger(num) 
 
 function isSemester(value) {  if (!['odd', 'even'].includes(value)) { return { valid: false, error: 'Semester must be odd or even' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};}; };
+
+function isSection(value) {  if (!['A', 'B', 'C', 'D'].includes(value)) { return { valid: false, error: 'Invalid section' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};}; };
