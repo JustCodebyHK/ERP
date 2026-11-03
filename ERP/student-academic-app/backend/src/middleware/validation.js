@@ -320,4 +320,7 @@ function isUsername(value) {  if (!/^[a-zA-Z0-9_]{3,30}$/.test(value)) { return 
 
 function isDisplayName(value) {  if (typeof value !== 'string' || value.length < 2 || value.length > 50) { return { valid: false, error: 'Invalid display name' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isBio(value) {  if (typeof value !== 'string' || value.length > 500) { return { valid: false, error: 'Bio too long' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
