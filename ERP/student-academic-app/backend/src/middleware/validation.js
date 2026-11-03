@@ -236,4 +236,7 @@ function isInterval(value) {  const n = Number(value); if (!Number.isInteger(n) 
 
 function isTimeout(value) {  const n = Number(value); if (!Number.isInteger(n) || n < 1000 || n > 300000) { return { valid: false, error: 'Invalid timeout' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isRetryCount(value) {  const n = Number(value); if (!Number.isInteger(n) || n < 0 || n > 10) { return { valid: false, error: 'Invalid retry count' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
