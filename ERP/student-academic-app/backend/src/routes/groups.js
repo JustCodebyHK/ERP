@@ -5,9 +5,14 @@ const { authRequired, requireRole } = require('../middleware/auth');
 
 const router = express.Router();
 
-// Generate unique invite code
+// Generate unique invite code — 16 alphanumeric chars (~95 bits of entropy).
 function generateInviteCode() {
-  return uuidv4().replace(/-/g, '').slice(0, 8).toUpperCase();
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let code = '';
+  for (let i = 0; i < 16; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return code;
 }
 
 // POST /api/groups — teacher create group
@@ -180,7 +185,7 @@ router.get('/:id/members', authRequired, async (req, res, next) => {
     if (!member.rows[0]) return res.status(403).json({ error: 'Not a member' });
 
     const members = await db.query(
-      `SELECT gm.*, u.name, u.email, u.role as user_role
+      `SELECT gm.*, u.name, u.email, u.role as user_role, gm.user_id
        FROM group_members gm
        JOIN users u ON u.id = gm.user_id
        WHERE gm.group_id = $1
@@ -195,8 +200,8 @@ router.get('/:id/members', authRequired, async (req, res, next) => {
   }
 });
 
-// PUT /api/groups/:id/members/:userId — update member role (admin/owner)
-router.put('/:id/members/:userId', authRequired, async (req, res, next) => {
+// PUT or POST /api/groups/:id/members/:userId — update member role (admin/owner)
+const updateMemberRole = async (req, res, next) => {
   try {
     const { role } = req.body;
     if (!['admin', 'member'].includes(role)) {
@@ -238,7 +243,9 @@ router.put('/:id/members/:userId', authRequired, async (req, res, next) => {
   } catch (err) {
     next(err);
   }
-});
+};
+router.put('/:id/members/:userId', authRequired, updateMemberRole);
+router.post('/:id/members/:userId', authRequired, updateMemberRole);
 
 // DELETE /api/groups/:id/members/:userId — remove member (admin/owner)
 router.delete('/:id/members/:userId', authRequired, async (req, res, next) => {
@@ -275,6 +282,70 @@ router.delete('/:id/members/:userId', authRequired, async (req, res, next) => {
       [req.params.id, req.params.userId]
     );
     res.json({ success: true });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /api/groups/:id/members — add member (owner/admin)
+router.post('/:id/members', authRequired, async (req, res, next) => {
+  try {
+    const { user_id, email, role = 'member' } = req.body;
+    if (!user_id && !email) {
+      return res.status(400).json({ error: 'user_id or email is required' });
+    }
+    if (!['member', 'admin'].includes(role)) {
+      return res.status(400).json({ error: 'Invalid role' });
+    }
+
+    const group = await db.query('SELECT * FROM groups WHERE id = $1', [req.params.id]);
+    if (!group.rows[0]) return res.status(404).json({ error: 'Group not found' });
+
+    const requesterMember = await db.query(
+      'SELECT role FROM group_members WHERE group_id = $1 AND user_id = $2',
+      [req.params.id, req.user.sub]
+    );
+    if (!requesterMember.rows[0] || !['owner', 'admin'].includes(requesterMember.rows[0].role)) {
+      return res.status(403).json({ error: 'Insufficient permissions' });
+    }
+
+    // Admin can only add members, not admins
+    if (role === 'admin' && requesterMember.rows[0].role !== 'owner') {
+      return res.status(403).json({ error: 'Only owner can add admins' });
+    }
+
+    let targetUserId = user_id;
+    if (email) {
+      const user = await db.query('SELECT id FROM users WHERE email = $1', [email]);
+      if (!user.rows[0]) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      targetUserId = user.rows[0].id;
+    }
+
+    // Check if already a member
+    const existing = await db.query(
+      'SELECT * FROM group_members WHERE group_id = $1 AND user_id = $2',
+      [req.params.id, targetUserId]
+    );
+    if (existing.rows[0]) {
+      return res.status(409).json({ error: 'User is already a member' });
+    }
+
+    await db.query(
+      `INSERT INTO group_members (group_id, user_id, role) VALUES ($1, $2, $3)`,
+      [req.params.id, targetUserId, role]
+    );
+
+    const newMember = await db.query(
+      `SELECT gm.*, u.name, u.email, u.role as user_role
+       FROM group_members gm
+       JOIN users u ON u.id = gm.user_id
+       WHERE gm.group_id = $1 AND gm.user_id = $2`,
+      [req.params.id, targetUserId]
+    );
+
+    res.status(201).json({ member: newMember.rows[0] });
   } catch (err) {
     next(err);
   }
