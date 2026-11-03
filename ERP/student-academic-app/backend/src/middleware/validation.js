@@ -134,4 +134,7 @@ function isAddress(value) {  if (typeof value !== 'string' || value.length > 200
 
 function isCity(value) {  if (typeof value !== 'string' || value.length > 50) { return { valid: false, error: 'City must not exceed 50 characters' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};}; };
+
+function isZipCode(value) {  if (!/^[0-9]{5,6}$/.test(value)) { return { valid: false, error: 'Invalid zip code' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};}; };
