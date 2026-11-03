@@ -116,4 +116,7 @@ function isSubmissionId(value) {  const num = Number(value); if (!Number.isInteg
 
 function isBatchId(value) {  const num = Number(value); if (!Number.isInteger(num) || num <= 0) { return { valid: false, error: 'Invalid batch ID' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};}; };
+
+function isYear(value) {  const num = Number(value); if (!Number.isInteger(num) || num < 2020 || num > 2030) { return { valid: false, error: 'Invalid year' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};}; };
