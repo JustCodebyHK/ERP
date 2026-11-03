@@ -215,4 +215,7 @@ function isPriority(value) {  if (!['low','medium','high'].includes(value)) { re
 
 function isVisibility(value) {  if (!['public','private','protected'].includes(value)) { return { valid: false, error: 'Invalid visibility' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isPermission(value) {  if (!['read','write','delete','admin'].includes(value)) { return { valid: false, error: 'Invalid permission' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
