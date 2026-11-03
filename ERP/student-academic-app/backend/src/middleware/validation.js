@@ -212,4 +212,7 @@ function isStatus(value) {  if (!['pending','approved','rejected'].includes(valu
 
 function isPriority(value) {  if (!['low','medium','high'].includes(value)) { return { valid: false, error: 'Invalid priority' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isVisibility(value) {  if (!['public','private','protected'].includes(value)) { return { valid: false, error: 'Invalid visibility' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
