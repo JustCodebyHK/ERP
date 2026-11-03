@@ -299,4 +299,7 @@ function isToken(value) {  if (typeof value !== 'string' || value.length < 10) {
 
 function isHash(value) {  if (!/^[a-f0-9]{32,128}$/.test(value)) { return { valid: false, error: 'Invalid hash' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isIpAddress(value) {  if (!/^\d{1,3}(\.\d{1,3}){3}$/.test(value)) { return { valid: false, error: 'Invalid IP address' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
