@@ -227,4 +227,7 @@ function isScore(value) {  const n = Number(value); if (!Number.isFinite(n) || n
 
 function isWeight(value) {  const n = Number(value); if (!Number.isFinite(n) || n < 0 || n > 1) { return { valid: false, error: 'Weight must be 0-1' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isDuration(value) {  const n = Number(value); if (!Number.isInteger(n) || n < 1 || n > 1440) { return { valid: false, error: 'Invalid duration' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
