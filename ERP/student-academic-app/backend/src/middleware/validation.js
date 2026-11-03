@@ -13,4 +13,14 @@ function isEmail(value) {
   return { valid: true };
 }
 
-module.exports = { isEmail };
+function isPassword(value) {
+  if (typeof value !== 'string' || !value) {
+    return { valid: false, error: 'Password is required' };
+  }
+  if (value.length < 12) {
+    return { valid: false, error: 'Password must be at least 12 characters' };
+  }
+  return { valid: true };
+}
+
+module.exports = { isEmail, isPassword };
