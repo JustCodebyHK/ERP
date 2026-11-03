@@ -194,4 +194,7 @@ function isCurrency(value) {  if (!/^[A-Z]{3}$/.test(value)) { return { valid: f
 
 function isAmount(value) {  const n = Number(value); if (!Number.isFinite(n) || n < 0) { return { valid: false, error: 'Invalid amount' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isPercentage(value) {  const n = Number(value); if (!Number.isFinite(n) || n < 0 || n > 100) { return { valid: false, error: 'Percentage must be 0-100' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
