@@ -125,4 +125,7 @@ function isSemester(value) {  if (!['odd', 'even'].includes(value)) { return { v
 
 function isSection(value) {  if (!['A', 'B', 'C', 'D'].includes(value)) { return { valid: false, error: 'Invalid section' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};}; };
+
+function isPhone(value) {  if (!/^[0-9]{10}$/.test(value)) { return { valid: false, error: 'Invalid phone number' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};}; };
