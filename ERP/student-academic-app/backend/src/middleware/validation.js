@@ -23,4 +23,17 @@ function isPassword(value) {
   return { valid: true };
 }
 
-module.exports = { isEmail, isPassword };
+function isName(value) {
+  if (typeof value !== 'string' || !value.trim()) {
+    return { valid: false, error: 'Name is required' };
+  }
+  if (value.trim().length < 2) {
+    return { valid: false, error: 'Name must be at least 2 characters' };
+  }
+  if (value.trim().length > 100) {
+    return { valid: false, error: 'Name must not exceed 100 characters' };
+  }
+  return { valid: true };
+}
+
+module.exports = { isEmail, isPassword, isName };
