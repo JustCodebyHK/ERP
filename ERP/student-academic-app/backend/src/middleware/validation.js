@@ -233,4 +233,7 @@ function isDuration(value) {  const n = Number(value); if (!Number.isInteger(n) 
 
 function isInterval(value) {  const n = Number(value); if (!Number.isInteger(n) || n < 60 || n > 86400) { return { valid: false, error: 'Invalid interval' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isTimeout(value) {  const n = Number(value); if (!Number.isInteger(n) || n < 1000 || n > 300000) { return { valid: false, error: 'Invalid timeout' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
