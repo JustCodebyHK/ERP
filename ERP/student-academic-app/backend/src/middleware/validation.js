@@ -323,4 +323,7 @@ function isDisplayName(value) {  if (typeof value !== 'string' || value.length <
 
 function isBio(value) {  if (typeof value !== 'string' || value.length > 500) { return { valid: false, error: 'Bio too long' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isWebsite(value) {  try { new URL(value); return { valid: true }; } catch { return { valid: false, error: 'Invalid website' }; }}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
