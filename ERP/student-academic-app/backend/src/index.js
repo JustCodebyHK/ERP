@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 
+const { logError } = require('./middleware/logger');
+
 const healthRouter = require('./routes/health');
 const authRouter = require('./routes/auth');
 const academicRouter = require('./routes/academic');
@@ -20,7 +22,17 @@ const groupAnnouncementsRouter = require('./routes/groupAnnouncements');
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-app.use(cors());
+const allowedOrigin = process.env.CORS_ORIGIN || '*';
+app.use(cors({ origin: allowedOrigin, credentials: true }));
+
+// Baseline security headers (no external middleware).
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'no-referrer');
+  next();
+});
+
 app.use(express.json());
 
 app.use('/api/health', healthRouter);
@@ -44,7 +56,7 @@ app.use((req, res) => {
 
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
-  console.error(err);
+  logError(err, req);
   res.status(500).json({ error: 'Internal server error' });
 });
 
