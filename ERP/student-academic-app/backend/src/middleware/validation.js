@@ -152,4 +152,7 @@ function isUrl(value) {  try { new URL(value); return { valid: true }; } catch {
 
 function isDate(value) {  const d = new Date(value); if (isNaN(d.getTime())) { return { valid: false, error: 'Invalid date' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};}; };
+
+function isFutureDate(value) {  const d = new Date(value); if (d <= new Date()) { return { valid: false, error: 'Date must be in the future' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};}; };
