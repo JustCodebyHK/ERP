@@ -251,4 +251,7 @@ function isQuery(value) {  if (typeof value !== 'string' || value.length > 1000)
 
 function isSearchTerm(value) {  if (typeof value !== 'string' || value.length > 200) { return { valid: false, error: 'Invalid search term' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isFilterKey(value) {  if (typeof value !== 'string' || value.length > 50) { return { valid: false, error: 'Invalid filter key' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
