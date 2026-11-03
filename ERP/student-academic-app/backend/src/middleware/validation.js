@@ -155,4 +155,7 @@ function isDate(value) {  const d = new Date(value); if (isNaN(d.getTime())) { r
 
 function isFutureDate(value) {  const d = new Date(value); if (d <= new Date()) { return { valid: false, error: 'Date must be in the future' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isPastDate(value) {  const d = new Date(value); if (d >= new Date()) { return { valid: false, error: 'Date must be in the past' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};}; };
