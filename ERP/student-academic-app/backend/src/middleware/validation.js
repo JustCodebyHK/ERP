@@ -146,4 +146,7 @@ function isFileSize(value) {  const mb = Number(value); if (!Number.isInteger(mb
 
 function isMimeType(value) {  const allowed = ['application/pdf','image/jpeg','image/png','text/plain']; if (!allowed.includes(value)) { return { valid: false, error: 'Unsupported file type' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};}; };
+
+function isUrl(value) {  try { new URL(value); return { valid: true }; } catch { return { valid: false, error: 'Invalid URL' }; }}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};}; };
