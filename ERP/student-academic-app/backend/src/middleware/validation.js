@@ -293,4 +293,7 @@ function isApiKey(value) {  if (typeof value !== 'string' || value.length < 20) 
 
 function isSecret(value) {  if (typeof value !== 'string' || value.length < 16) { return { valid: false, error: 'Invalid secret' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isToken(value) {  if (typeof value !== 'string' || value.length < 10) { return { valid: false, error: 'Invalid token' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
