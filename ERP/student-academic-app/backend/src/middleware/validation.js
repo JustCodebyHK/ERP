@@ -221,4 +221,7 @@ function isPermission(value) {  if (!['read','write','delete','admin'].includes(
 
 function isLevel(value) {  const n = Number(value); if (!Number.isInteger(n) || n < 1 || n > 10) { return { valid: false, error: 'Level must be 1-10' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isScore(value) {  const n = Number(value); if (!Number.isFinite(n) || n < 0 || n > 100) { return { valid: false, error: 'Score must be 0-100' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
