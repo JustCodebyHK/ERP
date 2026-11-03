@@ -161,4 +161,7 @@ function isPastDate(value) {  const d = new Date(value); if (d >= new Date()) { 
 
 function isBoolean(value) {  if (typeof value !== 'boolean') { return { valid: false, error: 'Value must be boolean' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isEnum(value) {  const allowed = ['active','inactive','archived']; if (!allowed.includes(value)) { return { valid: false, error: 'Invalid status' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};}; };
