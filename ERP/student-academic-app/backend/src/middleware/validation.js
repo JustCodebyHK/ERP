@@ -257,4 +257,7 @@ function isFilterKey(value) {  if (typeof value !== 'string' || value.length > 5
 
 function isSortKey(value) {  if (typeof value !== 'string' || value.length > 50) { return { valid: false, error: 'Invalid sort key' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isLanguageCode(value) {  if (!/^[a-z]{2}$/.test(value)) { return { valid: false, error: 'Invalid language code' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
