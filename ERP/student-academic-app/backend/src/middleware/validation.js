@@ -302,4 +302,7 @@ function isHash(value) {  if (!/^[a-f0-9]{32,128}$/.test(value)) { return { vali
 
 function isIpAddress(value) {  if (!/^\d{1,3}(\.\d{1,3}){3}$/.test(value)) { return { valid: false, error: 'Invalid IP address' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isMacAddress(value) {  if (!/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/.test(value)) { return { valid: false, error: 'Invalid MAC address' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
