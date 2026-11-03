@@ -275,4 +275,7 @@ function isDateFormat(value) {  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) { return
 
 function isDateTimeFormat(value) {  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)) { return { valid: false, error: 'Invalid datetime format' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isFileExtension(value) {  const ext = value.split('.').pop().toLowerCase(); if (!['pdf','doc','docx','jpg','png','txt'].includes(ext)) { return { valid: false, error: 'Invalid file extension' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
