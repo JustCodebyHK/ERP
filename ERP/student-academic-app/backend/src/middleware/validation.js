@@ -44,4 +44,17 @@ function isRole(value) {
   return { valid: true };
 }
 
-module.exports = { isEmail, isPassword, isName, isRole };
+function isOptionalString(value, maxLen = 500) {
+  if (value === undefined || value === null || value === '') {
+    return { valid: true };
+  }
+  if (typeof value !== 'string') {
+    return { valid: false, error: 'Value must be a string' };
+  }
+  if (value.length > maxLen) {
+    return { valid: false, error: 'Value must not exceed 500 characters' };
+  }
+  return { valid: true };
+}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString };
