@@ -140,4 +140,7 @@ function isZipCode(value) {  if (!/^[0-9]{5,6}$/.test(value)) { return { valid: 
 
 function isCountry(value) {  if (typeof value !== 'string' || value.length > 50) { return { valid: false, error: 'Invalid country' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};}; };
+
+function isFileSize(value) {  const mb = Number(value); if (!Number.isInteger(mb) || mb < 1 || mb > 100) { return { valid: false, error: 'Invalid file size' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};}; };
