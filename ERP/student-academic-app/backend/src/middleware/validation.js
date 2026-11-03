@@ -332,4 +332,7 @@ function isTwitterHandle(value) {  if (!/^@[a-zA-Z0-9_]{1,15}$/.test(value)) { r
 
 function isGithubUsername(value) {  if (!/^[a-zA-Z0-9-]{1,39}$/.test(value)) { return { valid: false, error: 'Invalid github username' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isLinkedInUrl(value) {  if (!/^https:\/\/www\.linkedin\.com\//.test(value)) { return { valid: false, error: 'Invalid linkedin url' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
