@@ -254,4 +254,7 @@ function isSearchTerm(value) {  if (typeof value !== 'string' || value.length > 
 
 function isFilterKey(value) {  if (typeof value !== 'string' || value.length > 50) { return { valid: false, error: 'Invalid filter key' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isSortKey(value) {  if (typeof value !== 'string' || value.length > 50) { return { valid: false, error: 'Invalid sort key' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
