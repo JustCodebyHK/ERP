@@ -248,4 +248,7 @@ function isPageNumber(value) {  const n = Number(value); if (!Number.isInteger(n
 
 function isQuery(value) {  if (typeof value !== 'string' || value.length > 1000) { return { valid: false, error: 'Query too long' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isSearchTerm(value) {  if (typeof value !== 'string' || value.length > 200) { return { valid: false, error: 'Invalid search term' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
