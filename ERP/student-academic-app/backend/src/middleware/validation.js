@@ -36,4 +36,12 @@ function isName(value) {
   return { valid: true };
 }
 
-module.exports = { isEmail, isPassword, isName };
+function isRole(value) {
+  const allowed = ['student', 'teacher', 'parent'];
+  if (!allowed.includes(value)) {
+    return { valid: false, error: 'Role must be one of: student, teacher, parent' };
+  }
+  return { valid: true };
+}
+
+module.exports = { isEmail, isPassword, isName, isRole };
