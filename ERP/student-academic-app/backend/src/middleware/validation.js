@@ -179,4 +179,7 @@ function isLimit(value) {  const n = Number(value); if (!Number.isInteger(n) || 
 
 function isOffset(value) {  const n = Number(value); if (!Number.isInteger(n) || n < 0) { return { valid: false, error: 'Offset must be non-negative' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isSortOrder(value) {  if (!['asc','desc'].includes(value)) { return { valid: false, error: 'Sort order must be asc or desc' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
