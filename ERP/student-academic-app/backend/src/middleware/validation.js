@@ -218,4 +218,7 @@ function isVisibility(value) {  if (!['public','private','protected'].includes(v
 
 function isPermission(value) {  if (!['read','write','delete','admin'].includes(value)) { return { valid: false, error: 'Invalid permission' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isLevel(value) {  const n = Number(value); if (!Number.isInteger(n) || n < 1 || n > 10) { return { valid: false, error: 'Level must be 1-10' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
