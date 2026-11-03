@@ -72,4 +72,20 @@ function isNonEmptyArray(value) {
   return { valid: true };
 }
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray };
+function validateBody(rules) {
+  return (req, res, next) => {
+    const errors = {};
+    for (const [field, validator] of Object.entries(rules)) {
+      const result = validator(req.body[field]);
+      if (!result.valid) {
+        errors[field] = result.error;
+      }
+    }
+    if (Object.keys(errors).length > 0) {
+      return res.status(400).json({ error: 'Validation failed', fields: errors });
+    }
+    next();
+  };
+}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody };
