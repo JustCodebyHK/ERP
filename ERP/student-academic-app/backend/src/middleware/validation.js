@@ -128,4 +128,7 @@ function isSection(value) {  if (!['A', 'B', 'C', 'D'].includes(value)) { return
 
 function isPhone(value) {  if (!/^[0-9]{10}$/.test(value)) { return { valid: false, error: 'Invalid phone number' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};}; };
+
+function isAddress(value) {  if (typeof value !== 'string' || value.length > 200) { return { valid: false, error: 'Address must not exceed 200 characters' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};}; };
