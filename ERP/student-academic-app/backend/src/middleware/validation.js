@@ -200,4 +200,7 @@ function isPercentage(value) {  const n = Number(value); if (!Number.isFinite(n)
 
 function isRating(value) {  const n = Number(value); if (!Number.isInteger(n) || n < 1 || n > 5) { return { valid: false, error: 'Rating must be 1-5' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isGrade(value) {  if (!['A+','A','B+','B','C+','C','D','F'].includes(value)) { return { valid: false, error: 'Invalid grade' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
