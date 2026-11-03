@@ -296,4 +296,7 @@ function isSecret(value) {  if (typeof value !== 'string' || value.length < 16) 
 
 function isToken(value) {  if (typeof value !== 'string' || value.length < 10) { return { valid: false, error: 'Invalid token' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isHash(value) {  if (!/^[a-f0-9]{32,128}$/.test(value)) { return { valid: false, error: 'Invalid hash' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
