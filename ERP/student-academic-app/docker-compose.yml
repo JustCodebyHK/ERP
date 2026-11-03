@@ -1,0 +1,17 @@
+# Dev-only local database. Production/scalable hosting = same Postgres engine,
+# just a different DATABASE_URL (see backend/.env.example).
+services:
+  db:
+    image: postgres:16
+    container_name: saa-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: saa_dev_pass
+      POSTGRES_DB: student_academic
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

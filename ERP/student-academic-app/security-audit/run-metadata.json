@@ -1,0 +1,49 @@
+{
+  "run_id": "saa-2026-11-03-01",
+  "repo": "student-academic-app",
+  "target": "D:\\Vote\\ERP\\student-academic-app",
+  "source_ref": "working tree (HEAD), dirty state unknown",
+  "profile": "quick",
+  "scope_paths": [
+    "backend/src/index.js",
+    "backend/src/middleware/auth.js",
+    "backend/src/routes/auth.js",
+    "backend/src/routes/notes.js",
+    "backend/src/routes/assignments.js",
+    "backend/src/routes/groups.js",
+    "backend/src/routes/groupMessages.js",
+    "backend/src/routes/groupAnnouncements.js",
+    "backend/src/routes/submissionKit.js",
+    "backend/src/routes/academic.js",
+    "backend/src/routes/announcements.js",
+    "backend/src/routes/timetable.js",
+    "backend/src/routes/planner.js",
+    "backend/src/routes/growth.js",
+    "backend/src/routes/parent.js",
+    "backend/src/db.js",
+    "backend/.env.example",
+    "frontend/lib/api.dart",
+    "frontend/lib/auth_store.dart",
+    "frontend/lib/screens/login_screen.dart",
+    "frontend/lib/main.dart",
+    "frontend/lib/widgets/app_theme.dart"
+  ],
+  "budget": null,
+  "execution_policy": "sandboxed-source-and-local-only",
+  "companion_files": [
+    "CLIENT-SIDE.md",
+    "ATTACK-CLASSES.md",
+    "RECONNAISSANCE.md",
+    "DATA-ISOLATION-AND-LIFECYCLE.md"
+  ],
+  "prior_run_paths": [],
+  "shared_file_owners": "parent",
+  "run_status": "complete",
+"remediation_summary": {
+  "remediated_findings": ["F-001", "F-002", "F-003", "F-004", "F-005", "F-006", "F-007", "F-008", "F-009", "F-010", "F-011", "F-012", "F-013"],
+  "open_findings": [],
+  "needs_validation": ["NV-001", "NV-002", "NV-003", "NV-004"]
+}
+  "mode_note": "Static source analysis only. OS-enforced sandboxed execution of target-controlled code could not be enforced on this Windows host; no build/test/fixture was executed. Runtime-dependent hypotheses are recorded as needs_validation.",
+  "generated_at": "2026-11-03T00:00:00Z"
+}

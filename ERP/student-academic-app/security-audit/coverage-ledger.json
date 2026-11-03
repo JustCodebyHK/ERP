@@ -1,0 +1,103 @@
+{
+  "run_id": "saa-2026-11-03-01",
+  "profile": "quick",
+  "coverage_units": [
+    {
+      "unit_id": "auth-endpoints",
+      "surface": "POST /api/auth/login, POST /api/auth/register, GET /api/auth/me",
+      "boundary": "authentication (client → server)",
+      "attack_class": "broken authentication",
+      "status": "planned",
+      "fingerprints": ["F-001", "F-002", "F-003", "F-004", "F-005"]
+    },
+    {
+      "unit_id": "jwt-session",
+      "surface": "JWT issuance, storage, verification, expiry",
+      "boundary": "session (client storage → API)",
+      "attack_class": "broken authentication / session management",
+      "status": "planned",
+      "fingerprints": ["F-006", "F-007", "F-008"]
+    },
+    {
+      "unit_id": "cors-headers",
+      "surface": "app.use(cors()) in src/index.js",
+      "boundary": "web origin (browser/Flutter Web → API)",
+      "attack_class": "misconfiguration",
+      "status": "planned",
+      "fingerprints": ["F-009"]
+    },
+    {
+      "unit_id": "tls-db",
+      "surface": "pg Pool ssl config in src/db.js",
+      "boundary": "transport (API → PostgreSQL)",
+      "attack_class": "misconfiguration / transport",
+      "status": "planned",
+      "fingerprints": ["F-010"]
+    },
+    {
+      "unit_id": "file-upload",
+      "surface": "multer storage in notes.js, assignments.js, submissionKit.js",
+      "boundary": "file upload (client → server filesystem)",
+      "attack_class": "unsafe file upload",
+      "status": "planned",
+      "fingerprints": ["F-011", "F-012"]
+    },
+    {
+      "unit_id": "file-download",
+      "surface": "fs.createReadStream(file_path) in notes.js download route",
+      "boundary": "local file read (server filesystem)",
+      "attack_class": "path traversal / arbitrary file read",
+      "status": "planned",
+      "fingerprints": ["F-013"]
+    },
+    {
+      "unit_id": "resource-ownership",
+      "surface": "batch_subjects/enrollments/group_members checks in all routes",
+      "boundary": "horizontal authorization (user → resource)",
+      "attack_class": "broken access control",
+      "status": "planned",
+      "fingerprints": []
+    },
+    {
+      "unit_id": "group-invite",
+      "surface": "generateInviteCode() in groups.js",
+      "boundary": "group membership (invite code → join)",
+      "attack_class": "broken access control",
+      "status": "planned",
+      "fingerprints": ["F-014"]
+    },
+    {
+      "unit_id": "security-headers",
+      "surface": "HTTP response headers in src/index.js",
+      "boundary": "client (browser/Flutter Web)",
+      "attack_class": "misconfiguration",
+      "status": "planned",
+      "fingerprints": ["F-015"]
+    },
+    {
+      "unit_id": "rate-limiting",
+      "surface": "auth + write endpoints, no middleware",
+      "boundary": "authentication / API abuse",
+      "attack_class": "brute force / abuse",
+      "status": "planned",
+      "fingerprints": ["F-003", "F-005"]
+    },
+    {
+      "unit_id": "local-storage",
+      "surface": "shared_preferences token storage in auth_store.dart",
+      "boundary": "local storage (app sandbox → device)",
+      "attack_class": "insecure data storage",
+      "status": "planned",
+      "fingerprints": ["F-006"]
+    }
+  ],
+  "out_of_scope": [
+    "iOS build and deployment",
+    "Push notification service",
+    "CI/CD pipelines",
+    "Render platform configuration outside repo",
+    "PostgreSQL server hardening outside repo"
+  ],
+  "coverage_statement": "Static source analysis only. Coverage units cover all auth, session, CORS, TLS, file upload/download, access-control, and header surfaces present in the reviewed source. No dynamic execution was performed (sandbox not available on this host). Runtime-dependent hypotheses are in NEEDS-VALIDATION.md.",
+  "generated_at": "2026-11-03T00:00:00Z"
+}

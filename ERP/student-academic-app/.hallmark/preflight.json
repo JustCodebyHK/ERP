@@ -1,0 +1,29 @@
+{
+  "project": "student-academic-app",
+  "platform": "flutter",
+  "language": "dart",
+  "signals": {
+    "designMd": null,
+    "brandSpec": null,
+    "projectFonts": "Inter (declared in app_theme.dart, not added to pubspec fonts)",
+    "palette": "ColorScheme.fromSeed(seed: 0xFF6366F1 indigo), light/dark via Material 3",
+    "spacing": "8dp grid (spaceXs=4, spaceSm=8, spaceMd=16, spaceLg=24, spaceXl=32, spaceXxl=48)",
+    "motionLibraries": "implicit AnimatedBuilder/AnimationController shimmer + staggered slide-fade",
+    "framework": "Flutter 3.x + Material 3",
+    "product": "local Flutter app, no running dev server, login + student/teacher/parent home screens",
+    "capture": "not runnable (no flutter SDK detected in this environment)",
+    "inspoMcp": null,
+    "togetherApiKey": null
+  },
+  "inferred": {
+    "material": "real app screens from codebase: login form, student home subjects grid, notes list, assignment cards, empty states",
+    "audience": "students, teachers and parents at YBIT college (@ybit.ac.in domain for student/teacher, any email for parent linking)",
+    "use": "sign in and reach subjects/assignments (the primary academic action)",
+    "tone": "utilitarian — clear, efficient, no-fluff academic work; 'clean and modern' rejected as not a tone"
+  },
+  "genre": "editorial (consumer/family academic app; not AI/generative/dark/atmospheric, not SaaS/enterprise/infra, not playful/kids/games)",
+  "theme": "ink (dealt manually, editorial genre)",
+  "scope": "full redesign of login screen (hero) + student home subjects tab, keeping all content and API wiring",
+  "preserved": "all API endpoints, auth flow, role routing, local caching, offline handling, file upload/download, notifications",
+  "introduced": "Hallmark token block at top of app_theme.dart, Hallmark stamp comment line, Floor-compliant typography/surface rules, single-column login hero, tightened microcopy (<=80 words per screen), focus indicators, reduced-motion awareness"
+}

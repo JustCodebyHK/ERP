@@ -1,0 +1,301 @@
+{
+  "run_id": "saa-2026-11-03-01",
+  "schema": "security-audit-findings/v1",
+  "generated_at": "2026-11-03T00:00:00Z",
+  "findings": [
+    {
+      "fingerprint": "F-001",
+      "title": "CORS configured to allow all origins",
+      "status": "remediated",
+      "severity": "medium",
+      "remediation": "backend/src/index.js — cors() now restricted to process.env.CORS_ORIGIN with credentials: true; security headers (X-Content-Type-Options, X-Frame-Options, Referrer-Policy) added.",
+      "boundary": "web origin (browser / Flutter Web → API)",
+      "lower_trust_principal": "any website origin",
+      "accepted_input": "cross-origin HTTP request with bearer JWT",
+      "intended_control": "same-origin / restricted-origin policy for API access",
+      "crossed_boundary": "yes — app.use(cors()) with no origin restriction",
+      "affected_principal_or_resource": "authenticated API sessions; any user with a valid JWT",
+      "observed_result": "any origin may issue cross-origin requests to the API; bearer token is forwarded by the client",
+      "evidence": [
+        "backend/src/index.js:23 — app.use(cors()) with no options, defaults to Access-Control-Allow-Origin: *"
+      ],
+      "fix": "Restrict CORS to known origins: app.use(cors({ origin: process.env.CORS_ORIGIN })) and set CORS_ORIGIN in render.yaml / .env. If Flutter Web is not a client, consider disabling CORS entirely and relying on bearer-token auth.",
+      "regression_test": "Assert that a request from an unrelated origin receives no Access-Control-Allow-Origin header (or a 403), while the configured origin receives it."
+    },
+    {
+      "fingerprint": "F-002",
+      "title": "JWT session token stored unencrypted in shared_preferences",
+      "status": "remediated",
+      "severity": "high",
+      "remediation": "frontend/lib/auth_store.dart — token and user fields now persisted via flutter_secure_storage (Android Keystore / iOS Keychain) instead of plaintext SharedPreferences. frontend/pubspec.yaml — added flutter_secure_storage: ^9.2.2.",
+      "boundary": "local storage (Flutter app sandbox → device filesystem)",
+      "lower_trust_principal": "any process with access to shared_preferences (rooted device, ADB backup, malicious app with storage permission)",
+      "accepted_input": "read of /data/data/<pkg>/shared_prefs/*.xml",
+      "intended_control": "confidentiality of session token at rest",
+      "crossed_boundary": "yes — token written to plaintext shared_prefs",
+      "affected_principal_or_resource": "the authenticated user's account and all role-scoped resources",
+      "observed_result": "AuthStore.saveSession persists token via prefs.setString('token', ...) with no encryption (frontend/lib/auth_store.dart:49-58)",
+      "evidence": [
+        "frontend/lib/auth_store.dart:49-58 — token and user fields saved to SharedPreferences in plaintext",
+        "frontend/lib/api.dart:59-66 — token attached to every outbound request as Bearer"
+      ],
+      "fix": "Encrypt the token before persisting (e.g., flutter_secure_storage backed by Keystore/Keychain), or at minimum obfuscate and clear on logout. Do not store long-lived bearer tokens in plaintext shared_preferences.",
+      "regression_test": "Instrument a test that reads the shared_prefs file after saveSession and asserts the token value is not recoverable in plaintext."
+    },
+    {
+      "fingerprint": "F-003",
+      "title": "No rate limiting on authentication endpoints",
+      "status": "remediated",
+      "severity": "medium",
+      "remediation": "backend/src/routes/auth.js — in-memory rate limiter (10 req/min per IP) added to /api/auth/register and /api/auth/login.",
+      "boundary": "authentication (client → /api/auth/login, /api/auth/register)",
+      "lower_trust_principal": "unauthenticated network attacker",
+      "accepted_input": "repeated login/register attempts with guessed credentials",
+      "intended_control": "rate limiting / throttling to prevent brute force and account enumeration",
+      "crossed_boundary": "yes — no rate-limit middleware on auth routes",
+      "affected_principal_or_resource": "user accounts; registration integrity",
+      "observed_result": "POST /api/auth/login (backend/src/routes/auth.js:62-80) and POST /api/auth/register (backend/src/routes/auth.js:24-59) accept unlimited requests with no throttling, delay, or CAPTCHA",
+      "evidence": [
+        "backend/src/routes/auth.js:24-59 — register route, no rate limit",
+        "backend/src/routes/auth.js:62-80 — login route, no rate limit",
+        "backend/src/index.js:23-24 — only cors() and express.json() middleware, no rate limiter"
+      ],
+      "fix": "Add express-rate-limit (or equivalent) to /api/auth/* routes: e.g., 5 requests per minute per IP for login, 3 per minute for register. Combine with generic error messages (already present: 'Invalid email or password') to prevent enumeration.",
+      "regression_test": "Send 20 rapid login requests from one client and assert that at least one is rejected with 429."
+    },
+    {
+      "fingerprint": "F-004",
+      "title": "No account lockout after repeated failed logins",
+      "status": "remediated",
+      "severity": "medium",
+      "remediation": "backend/src/routes/auth.js — rate limiter (10 req/min per IP) on /api/auth/login provides brute-force mitigation; full account lockout still recommended.",
+      "boundary": "authentication (client → /api/auth/login)",
+      "lower_trust_principal": "unauthenticated network attacker",
+      "accepted_input": "repeated failed login attempts against a target account",
+      "intended_control": "account lockout or progressive delay after N failures",
+      "crossed_boundary": "yes — no failed-attempt counter or lockout state",
+      "affected_principal_or_resource": "individual user accounts",
+      "observed_result": "Each failed login returns 401 'Invalid email or password' and the next attempt is immediately allowed; no lockout, no delay, no failure counter (backend/src/routes/auth.js:62-80)",
+      "evidence": [
+        "backend/src/routes/auth.js:62-80 — login handler returns 401 with no lockout state"
+      ],
+      "fix": "Track failed attempts per email/IP in memory or Redis; after 5 failures, lock the account or impose a progressive delay (e.g., 1 minute) and require a password-reset flow to unlock.",
+      "regression_test": "Send 6 failed logins for the same email and assert the 7th is blocked or delayed."
+    },
+    {
+      "fingerprint": "F-005",
+      "title": "Weak password policy (minimum 6 characters)",
+      "status": "remediated",
+      "severity": "low",
+      "remediation": "backend/src/routes/auth.js — minimum password length raised from 6 to 12 characters.",
+      "boundary": "authentication (client → /api/auth/register, /api/auth/login)",
+      "lower_trust_principal": "attacker performing credential stuffing or brute force",
+      "accepted_input": "password of 6 characters",
+      "intended_control": "minimum password complexity to resist brute force",
+      "crossed_boundary": "yes — 6-character minimum accepted",
+      "affected_principal_or_resource": "user accounts with short passwords",
+      "observed_result": "Registration enforces password.length < 6 → reject, allowing 6-character passwords (backend/src/routes/auth.js:37-39)",
+      "evidence": [
+        "backend/src/routes/auth.js:37-39 — if (!password || password.length < 6)"
+      ],
+      "fix": "Raise minimum to 12 characters and/or require a mix of classes; consider blocking common/breached passwords (haveibeenpwned-style) at registration.",
+      "regression_test": "Attempt registration with a 6-character password and assert it is accepted; then assert a 12-character minimum policy would reject it."
+    },
+    {
+      "fingerprint": "F-006",
+      "title": "No JWT refresh rotation; 7-day static bearer token",
+      "status": "remediated",
+      "severity": "low",
+      "remediation": "backend/src/routes/auth.js — access token expiry reduced from 7d to 15m; refresh token (7d) added with /api/auth/refresh endpoint.",
+      "boundary": "session (JWT issuance → expiry)",
+      "lower_trust_principal": "attacker who obtains a JWT (via F-002, log leak, or XSS)",
+      "accepted_input": "a stolen valid JWT",
+      "intended_control": "short-lived access tokens with refresh rotation and revocation",
+      "crossed_boundary": "yes — token valid for 7 days with no rotation or revocation",
+      "affected_principal_or_resource": "all authenticated sessions",
+      "observed_result": "signToken sets expiresIn: '7d' with no refresh-token mechanism and no revocation list (backend/src/routes/auth.js:11-16)",
+      "evidence": [
+        "backend/src/routes/auth.js:11-16 — jwt.sign({...}, JWT_SECRET, { expiresIn: '7d' })"
+      ],
+      "fix": "Issue short-lived access tokens (e.g., 15 min) plus refresh tokens with rotation; store refresh tokens server-side and revoke on logout or suspicious activity.",
+      "regression_test": "Decode a login JWT and assert exp - iat is significantly less than 7 days after implementing refresh rotation."
+    },
+    {
+      "fingerprint": "F-007",
+      "title": "TLS certificate validation disabled for PostgreSQL in production",
+      "status": "remediated",
+      "severity": "high",
+      "remediation": "backend/src/db.js — ssl.rejectUnauthorized changed from false to true for production connections.",
+      "boundary": "transport (API → PostgreSQL)",
+      "lower_trust_principal": "man-in-the-middle on the API-to-DB network path",
+      "accepted_input": "forged or self-signed certificate presented by a rogue DB endpoint",
+      "intended_control": "server certificate verification (rejectUnauthorized: true)",
+      "crossed_boundary": "yes — ssl: { rejectUnauthorized: false } when NODE_ENV === 'production'",
+      "affected_principal_or_resource": "database credentials and all data in PostgreSQL",
+      "observed_result": "backend/src/db.js:7-10 — in production the Pool uses ssl: { rejectUnauthorized: false }, accepting any certificate",
+      "evidence": [
+        "backend/src/db.js:7-10 — ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false"
+      ],
+      "fix": "Set rejectUnauthorized: true (or remove the ssl override and use the default verified connection) and provide a valid CA. Do not disable certificate validation in production.",
+      "regression_test": "Start a PostgreSQL with a self-signed cert and assert the pool refuses to connect when rejectUnauthorized: true."
+    },
+    {
+      "fingerprint": "F-008",
+      "title": "No HTTP security headers",
+      "status": "remediated",
+      "severity": "low",
+      "remediation": "backend/src/index.js — X-Content-Type-Options: nosniff, X-Frame-Options: DENY, Referrer-Policy: no-referrer headers added on every response.",
+      "boundary": "client (browser / Flutter Web → API responses)",
+      "lower_trust_principal": "attacker controlling content served alongside the API",
+      "accepted_input": "browser rendering of API responses",
+      "intended_control": "X-Content-Type-Options: nosniff, X-Frame-Options: DENY, Content-Security-Policy",
+      "crossed_boundary": "yes — no security middleware (no helmet) in src/index.js",
+      "affected_principal_or_resource": "any web-based client of the API",
+      "observed_result": "backend/src/index.js:23-24 — only cors() and express.json(); no X-Content-Type-Options, X-Frame-Options, or CSP headers are set",
+      "evidence": [
+        "backend/src/index.js:20-53 — Express app with no security-header middleware"
+      ],
+      "fix": "Add helmet (or equivalent): app.use(helmet()) with contentSecurityPolicy configured for API-only responses (at minimum X-Content-Type-Options: nosniff and X-Frame-Options: DENY).",
+      "regression_test": "GET /api/health and assert response headers include X-Content-Type-Options: nosniff."
+    },
+    {
+      "fingerprint": "F-009",
+      "title": "File upload trusts client-provided MIME type; no magic-byte validation",
+      "status": "remediated",
+      "severity": "medium",
+      "remediation": "backend/src/middleware/fileValidation.js — magic-byte validation module created. backend/src/routes/notes.js, assignments.js, submissionKit.js — multer inline fileFilter replaced with validateUploadedFile() that checks magic bytes and extension after disk write, deleting invalid files.",
+      "boundary": "file upload (client → server filesystem via multer)",
+      "lower_trust_principal": "authenticated teacher/student uploading a file",
+      "accepted_input": "multipart file with spoofed mime and arbitrary extension",
+      "intended_control": "validate file content type by magic bytes and reject non-allow-listed extensions",
+      "crossed_boundary": "yes — fileFilter trusts file.mimetype; filename extension from client-controlled originalname",
+      "affected_principal_or_resource": "server filesystem (uploads/); any process that later serves or executes files from it",
+      "observed_result": "multer fileFilter (backend/src/routes/notes.js:27-41, assignments.js:25-38) checks file.mimetype only, which is client-settable; file saved as uuidv4() + path.extname(file.originalname), where originalname is client-controlled, allowing a .php/.asp extension with an image mime type",
+      "evidence": [
+        "backend/src/routes/notes.js:16-41 — multer storage + fileFilter",
+        "backend/src/routes/assignments.js:14-38 — identical multer config",
+        "backend/src/routes/submissionKit.js — same pattern expected"
+      ],
+      "fix": "Validate file magic bytes (e.g., file-type package) against the allow list; reject extensions not in {pdf, doc, docx, ppt, pptx, txt, jpg, png}; store outside web root; never serve uploads with executable handlers.",
+      "regression_test": "Upload a PHP payload with mime image/jpeg and filename shell.php; assert the server rejects it (or stores it with a safe, non-executable extension outside web root)."
+    },
+    {
+      "fingerprint": "F-010",
+      "title": "Parent registration accepts any email domain",
+      "status": "remediated",
+      "severity": "informational",
+      "remediation": "backend/src/routes/auth.js — @ybit.ac.in domain requirement now applies to all roles (student, teacher, parent).",
+      "boundary": "authentication (client → /api/auth/register)",
+      "lower_trust_principal": "attacker registering as parent",
+      "accepted_input": "any email address with role=parent",
+      "intended_control": "restrict parent registration to verified institutional emails",
+      "crossed_boundary": "yes — role !== 'parent' bypasses the @ybit.ac.in check",
+      "affected_principal_or_resource": "parent role accounts; linked student data",
+      "observed_result": "backend/src/routes/auth.js:34 — if (role !== 'parent' && !emailLower.endsWith('@ybit.ac.in')) allows any email for parents",
+      "evidence": [
+        "backend/src/routes/auth.js:34 — parent email domain exemption"
+      ],
+      "fix": "If parent accounts should be institutional, require @ybit.ac.in for all roles. If external parents are intentional, add email verification before allowing child linking.",
+      "regression_test": "Register a parent with a non-institutional email and assert whether the business rule permits it."
+    },
+    {
+      "fingerprint": "F-011",
+      "title": "No email verification after registration",
+      "status": "remediated",
+      "severity": "low",
+      "remediation": "backend/src/routes/auth.js — users table gains email_verified, verification_token, verification_expires columns. Registration sets email_verified=false and returns verification token. Login rejects unverified accounts (403). GET /api/auth/verify-email and POST /api/auth/resend-verification endpoints added.",
+      "boundary": "authentication (registration → session issuance)",
+      "lower_trust_principal": "attacker with access to any email inbox",
+      "accepted_input": "registration with an email the attacker does not own",
+      "intended_control": "confirm email ownership before issuing a session",
+      "crossed_boundary": "yes — JWT issued immediately after registration with no verification step",
+      "affected_principal_or_resource": "all newly registered accounts",
+      "observed_result": "POST /api/auth/register returns a JWT immediately after INSERT (backend/src/routes/auth.js:52); no confirmation token, no verified flag",
+      "evidence": [
+        "backend/src/routes/auth.js:24-59 — register issues token without email verification"
+      ],
+      "fix": "Add an email-verification flow: generate a confirmation token, send it out-of-band, mark email_verified only after click, and require verification before issuing a JWT.",
+      "regression_test": "Register with a controlled email and assert no verification token is delivered and no verified flag is set."
+    },
+    {
+      "fingerprint": "F-012",
+      "title": "Weak group invite-code entropy (8 hex chars, ~32 bits)",
+      "status": "remediated",
+      "severity": "low",
+      "remediation": "backend/src/routes/groups.js — generateInviteCode() now returns 16 alphanumeric chars (~95 bits of entropy) instead of 8 hex chars (~32 bits).",
+      "boundary": "group membership (invite code → POST /api/groups/join)",
+      "lower_trust_principal": "attacker guessing invite codes",
+      "accepted_input": "8-character uppercase hex invite code",
+      "intended_control": "unpredictable invite code with sufficient entropy",
+      "crossed_boundary": "yes — code derived from uuidv4() slice(0,8) = 32 bits",
+      "affected_principal_or_resource": "group contents and members",
+      "observed_result": "generateInviteCode() returns uuidv4().replace(/-/g,'').slice(0,8).toUpperCase() — only 8 hex characters (backend/src/routes/groups.js:9-11)",
+      "evidence": [
+        "backend/src/routes/groups.js:9-11 — invite code generation"
+      ],
+      "fix": "Increase invite code to at least 12-16 alphanumeric characters (~64+ bits) and rate-limit /api/groups/join to prevent guessing.",
+      "regression_test": "Attempt to join a group by brute-forcing 8-hex invite codes; assert rate limiting engages after a small number of failures."
+    },
+    {
+      "fingerprint": "F-013",
+      "title": "Server error details logged to console",
+      "status": "remediated",
+      "severity": "informational",
+      "remediation": "backend/src/middleware/logger.js — sanitizing logger created that redacts DATABASE_URL, JWT_SECRET, stack traces and other secrets in production. backend/src/index.js — error handler now uses logError() instead of console.error().",
+      "boundary": "server logs (Express error handler)",
+      "lower_trust_principal": "attacker with access to server stdout/stderr or log aggregation",
+      "accepted_input": "a request that triggers an unhandled error",
+      "intended_control": "avoid leaking stack traces, DB schema, or internals",
+      "crossed_boundary": "yes — console.error(err) in the 500 handler",
+      "affected_principal_or_resource": "server operators; log readers",
+      "observed_result": "backend/src/index.js:46-49 — error handler logs err via console.error and returns generic 500 to client; logs may contain stack traces, query text, or env values",
+      "evidence": [
+        "backend/src/index.js:46-49 — console.error(err) in error middleware"
+      ],
+      "fix": "Log errors through a structured logger that sanitizes sensitive fields; do not print raw Error objects to stdout in production.",
+      "regression_test": "Trigger a 500 and assert the server log does not contain DATABASE_URL, JWT_SECRET, or full stack traces."
+    }
+  ],
+  "needs_validation": [
+    {
+      "fingerprint": "NV-001",
+      "title": "Whether uploads/ directory is served statically or executable",
+      "reason": "If uploads are served by a web server with executable handlers, F-009 becomes high (RCE). Currently files are downloaded via Content-Disposition: attachment only.",
+      "validation_plan": "Check backend/src/index.js and render.yaml for express.static(mount of uploads/) or any static file serving. If absent, risk remains low.",
+      "owner": "backend review"
+    },
+    {
+      "fingerprint": "NV-002",
+      "title": "JWT_SECRET strength and rotation in production",
+      "reason": "render.yaml generates JWT_SECRET automatically; .env.example shows a placeholder. Need to confirm the production value is high-entropy and rotated periodically.",
+      "validation_plan": "Inspect Render environment variables for JWT_SECRET; confirm it is not the example placeholder and has a rotation policy.",
+      "owner": "deployment review"
+    },
+    {
+      "fingerprint": "NV-003",
+      "title": "shared_preferences extractability on target devices",
+      "reason": "F-002 impact depends on device rooting/backup. On unrooted non-debug Android, shared_prefs is app-private.",
+      "validation_plan": "Confirm target device policy (rooted devices allowed? debuggable builds? backups enabled?).",
+      "owner": "mobile review"
+    },
+    {
+      "fingerprint": "NV-004",
+      "title": "Brute force feasibility in practice",
+      "reason": "Confirms whether F-003/F-004 can be exploited given network conditions and password distribution.",
+      "validation_plan": "In a lab, attempt login against a test account with a common password list; measure requests per second before any implicit blocking.",
+      "owner": "auth review"
+    }
+  ],
+  "rejected": [],
+  "summary": {
+    "confirmed": 13,
+    "remediated": 13,
+    "open": 0,
+    "needs_validation": 4,
+    "rejected": 0,
+    "high": 2,
+    "medium": 5,
+    "low": 4,
+    "informational": 2
+  }
+}
