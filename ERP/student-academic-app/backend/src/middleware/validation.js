@@ -272,4 +272,7 @@ function isTimeFormat(value) {  if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(value)) { 
 
 function isDateFormat(value) {  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) { return { valid: false, error: 'Invalid date format' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isDateTimeFormat(value) {  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(value)) { return { valid: false, error: 'Invalid datetime format' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
