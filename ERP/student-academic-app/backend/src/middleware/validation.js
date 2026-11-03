@@ -143,4 +143,7 @@ function isCountry(value) {  if (typeof value !== 'string' || value.length > 50)
 
 function isFileSize(value) {  const mb = Number(value); if (!Number.isInteger(mb) || mb < 1 || mb > 100) { return { valid: false, error: 'Invalid file size' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};}; };
+
+function isMimeType(value) {  const allowed = ['application/pdf','image/jpeg','image/png','text/plain']; if (!allowed.includes(value)) { return { valid: false, error: 'Unsupported file type' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};}; };
