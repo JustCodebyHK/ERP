@@ -188,4 +188,7 @@ function isLanguage(value) {  if (!['en','es','fr'].includes(value)) { return { 
 
 function isTimezone(value) {  try { Intl.DateTimeFormat(undefined, { timeZone: value }); return { valid: true }; } catch { return { valid: false, error: 'Invalid timezone' }; }}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isCurrency(value) {  if (!/^[A-Z]{3}$/.test(value)) { return { valid: false, error: 'Invalid currency code' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
