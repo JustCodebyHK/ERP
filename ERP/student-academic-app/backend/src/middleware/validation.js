@@ -65,4 +65,11 @@ function isPositiveInteger(value) {
   return { valid: true };
 }
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger };
+function isNonEmptyArray(value) {
+  if (!Array.isArray(value) || value.length === 0) {
+    return { valid: false, error: 'Value must be a non-empty array' };
+  }
+  return { valid: true };
+}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray };
