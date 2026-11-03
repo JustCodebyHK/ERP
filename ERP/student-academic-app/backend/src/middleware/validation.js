@@ -92,4 +92,7 @@ function validateBody(rules) {
 
 function isStudentId(value) {  const num = Number(value); if (!Number.isInteger(num) || num <= 0 || num > 999999) { return { valid: false, error: 'Invalid student ID' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody}; };
+
+function isTeacherId(value) {  const num = Number(value); if (!Number.isInteger(num) || num <= 0 || num > 999999) { return { valid: false, error: 'Invalid teacher ID' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};}; };
