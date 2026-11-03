@@ -176,4 +176,7 @@ function isPort(value) {  const p = Number(value); if (!Number.isInteger(p) || p
 
 function isLimit(value) {  const n = Number(value); if (!Number.isInteger(n) || n < 1 || n > 100) { return { valid: false, error: 'Limit must be 1-100' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isOffset(value) {  const n = Number(value); if (!Number.isInteger(n) || n < 0) { return { valid: false, error: 'Offset must be non-negative' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
