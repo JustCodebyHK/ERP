@@ -263,4 +263,7 @@ function isLanguageCode(value) {  if (!/^[a-z]{2}$/.test(value)) { return { vali
 
 function isCountryCode(value) {  if (!/^[A-Z]{2}$/.test(value)) { return { valid: false, error: 'Invalid country code' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isCurrencyCode(value) {  if (!/^[A-Z]{3}$/.test(value)) { return { valid: false, error: 'Invalid currency code' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
