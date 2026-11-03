@@ -245,4 +245,7 @@ function isPageSize(value) {  const n = Number(value); if (!Number.isInteger(n) 
 
 function isPageNumber(value) {  const n = Number(value); if (!Number.isInteger(n) || n < 1) { return { valid: false, error: 'Invalid page number' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isQuery(value) {  if (typeof value !== 'string' || value.length > 1000) { return { valid: false, error: 'Query too long' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
