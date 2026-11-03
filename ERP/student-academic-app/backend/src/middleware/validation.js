@@ -242,4 +242,7 @@ function isRetryCount(value) {  const n = Number(value); if (!Number.isInteger(n
 
 function isPageSize(value) {  const n = Number(value); if (!Number.isInteger(n) || n < 1 || n > 500) { return { valid: false, error: 'Invalid page size' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+
+function isPageNumber(value) {  const n = Number(value); if (!Number.isInteger(n) || n < 1) { return { valid: false, error: 'Invalid page number' }; } return { valid: true };}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
