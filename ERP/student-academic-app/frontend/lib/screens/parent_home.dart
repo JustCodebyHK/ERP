@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../api.dart';
 import '../auth_store.dart';
+import '../models/child.dart';
 import '../models/parent.dart';
 import '../widgets/app_theme.dart';
 import 'login_screen.dart';
