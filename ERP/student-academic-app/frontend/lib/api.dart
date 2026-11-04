@@ -36,9 +36,9 @@ class ApiClient {
     return client.get(uri, headers: allHeaders).timeout(timeout);
   }
 
-  Future<http.Response> post(String path, {Map<String, dynamic>? body, Map<String, String>? headers}) async {
+  Future<http.Response> post(String path, {Map<String, dynamic>? body}) async {
     final uri = Uri.parse('$baseUrl$path');
-    final allHeaders = {'Content-Type': 'application/json', ...?headers, ..._authHeaders()};
+    final allHeaders = {'Content-Type': 'application/json', ..._authHeaders()};
     return client.post(uri,
         headers: allHeaders,
         body: body != null ? jsonEncode(body) : null).timeout(timeout);
