@@ -108,4 +108,20 @@ function requireAnyRole(...roles) {
   };
 }
 
-module.exports = { authRequired, optionalAuth, requireRole, requireAnyRole, rateLimiter, blacklistToken, isBlacklisted, extractToken, getTokenExpiry, isTokenExpired };
+function requireSelfOrRole(allowedRoles, idParam = 'id') {
+  return (req, res, next) => {
+    if (!req.user) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+    if (allowedRoles.includes(req.user.role)) {
+      return next();
+    }
+    const targetId = req.params[idParam] || req.body[idParam] || req.query[idParam];
+    if (targetId && String(req.user.sub) === String(targetId)) {
+      return next();
+    }
+    return res.status(403).json({ error: 'Insufficient permissions' });
+  };
+}
+
+module.exports = { authRequired, optionalAuth, requireRole, requireAnyRole, requireSelfOrRole, rateLimiter, blacklistToken, isBlacklisted, extractToken, getTokenExpiry, isTokenExpired };
