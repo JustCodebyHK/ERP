@@ -355,4 +355,10 @@ function isRoleCombination(value) {
   const allowed = ['student','teacher','parent','admin']; if (!allowed.includes(value)) { return { valid: false, error: 'Invalid role combination' }; } return { valid: true };
 }
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination };
+
+
+function isBatchSemester(value) {
+  if (!['odd','even'].includes(value)) { return { valid: false, error: 'Batch semester must be odd or even' }; } return { valid: true };
+}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester };
