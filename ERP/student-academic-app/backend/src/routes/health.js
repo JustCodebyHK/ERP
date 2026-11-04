@@ -56,4 +56,34 @@ router.get('/cpu', (req, res) => {
   });
 });
 
+router.get('/summary', async (req, res) => {
+  if (!db.isConfigured()) {
+    return res.json({ api: 'ok', db: 'not configured' });
+  }
+  try {
+    const start = Date.now();
+    await db.query('SELECT 1 AS ok');
+    const dbLatency = Date.now() - start;
+    const uptimeSeconds = Math.floor((Date.now() - startTime) / 1000);
+    const mem = process.memoryUsage();
+    const cpus = os.cpus();
+    res.json({
+      status: 'ok',
+      api: 'ok',
+      db: 'connected',
+      db_latency_ms: dbLatency,
+      uptime_seconds: uptimeSeconds,
+      memory: {
+        rss_mb: Math.round(mem.rss / 1024 / 1024),
+        heap_used_mb: Math.round(mem.heapUsed / 1024 / 1024)
+      },
+      cpu: { count: cpus.length, load_average: os.loadavg() },
+      environment: process.env.NODE_ENV || 'development',
+      timestamp: new Date().toISOString()
+    });
+  } catch (err) {
+    res.status(503).json({ status: 'error', db: 'error', detail: err.message });
+  }
+});
+
 module.exports = router;
