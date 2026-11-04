@@ -29,9 +29,13 @@ function isBlacklisted(token) {
   return blacklistedTokens.has(token);
 }
 
-function authRequired(req, res, next) {
+function extractToken(req) {
   const header = req.headers.authorization || '';
-  const token = header.startsWith('Bearer ') ? header.slice(7) : null;
+  return header.startsWith('Bearer ') ? header.slice(7) : null;
+}
+
+function authRequired(req, res, next) {
+  const token = extractToken(req);
   if (!token) {
     return res.status(401).json({ error: 'Missing bearer token' });
   }
@@ -47,8 +51,7 @@ function authRequired(req, res, next) {
 }
 
 function optionalAuth(req, res, next) {
-  const header = req.headers.authorization || '';
-  const token = header.startsWith('Bearer ') ? header.slice(7) : null;
+  const token = extractToken(req);
   if (!token) {
     return next();
   }
@@ -84,4 +87,4 @@ function requireAnyRole(...roles) {
   };
 }
 
-module.exports = { authRequired, optionalAuth, requireRole, requireAnyRole, rateLimiter, blacklistToken, isBlacklisted };
+module.exports = { authRequired, optionalAuth, requireRole, requireAnyRole, rateLimiter, blacklistToken, isBlacklisted, extractToken };
