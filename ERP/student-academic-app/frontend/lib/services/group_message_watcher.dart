@@ -8,6 +8,7 @@ class GroupMessageWatcher {
   Timer? _timer;
   Duration _interval = const Duration(seconds: 30);
   Function(String groupId)? onNewMessage;
+  static String? activeGroupId;
 
   void setWatchInterval(Duration interval) {
     _interval = interval;
