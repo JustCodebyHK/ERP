@@ -183,10 +183,8 @@ class _GroupChatScreenState extends State<GroupChatScreen> {
     _scrollToBottom();
 
     try {
-      final res = await apiSendGroupMessage(widget.groupId, {
-        'content': text,
-        'type': 'text',
-      });
+      final res = await apiSendGroupMessage(widget.groupId,
+          content: text, type: 'text');
 
       // Replace optimistic message with server data if available.
       if (mounted && res['message'] != null) {

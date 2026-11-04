@@ -5,6 +5,7 @@
   final String endTime;
   final int durationMinutes;
   final int subjectId;
+  final String? room;
 
   TimetableEntry({
     required this.id,
@@ -13,6 +14,7 @@
     required this.endTime,
     required this.durationMinutes,
     required this.subjectId,
+    this.room,
   });
 
   factory TimetableEntry.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@
       endTime: json['end_time'] as String,
       durationMinutes: json['duration_minutes'] as int,
       subjectId: json['subject_id'] as int,
+      room: json['room'] as String?,
     );
   }
 
@@ -34,10 +37,16 @@
       'end_time': endTime,
       'duration_minutes': durationMinutes,
       'subject_id': subjectId,
+      'room': room,
     };
   }
 
-  TimetableEntry copyWith({String? startTime, String? endTime}) {
+  static List<String> get days => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+  String get timeRange => '$startTime - $endTime';
+  String? get displayRoom => room ?? 'TBA';
+
+  TimetableEntry copyWith({String? startTime, String? endTime, String? room}) {
     return TimetableEntry(
       id: id,
       dayOfWeek: dayOfWeek,
@@ -45,6 +54,7 @@
       endTime: endTime ?? this.endTime,
       durationMinutes: durationMinutes,
       subjectId: subjectId,
+      room: room ?? this.room,
     );
   }
 
