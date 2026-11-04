@@ -1,7 +1,8 @@
-const express = require('express');
+﻿const express = require('express');
 const db = require('../db');
 
 const router = express.Router();
+const startTime = Date.now();
 
 router.get('/', async (req, res) => {
   if (!db.isConfigured()) {
