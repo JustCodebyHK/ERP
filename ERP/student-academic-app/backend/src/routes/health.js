@@ -4,16 +4,20 @@ const os = require('os');
 
 const router = express.Router();
 const startTime = Date.now();
-let prevCpu = null;
-let prevTime = null;
 
 router.get('/', async (req, res) => {
   if (!db.isConfigured()) {
     return res.json({ api: 'ok', db: 'not configured' });
   }
   try {
+    const start = Date.now();
     const result = await db.query('SELECT 1 AS ok');
-    res.json({ api: 'ok', db: result.rows[0].ok === 1 ? 'connected' : 'error' });
+    const latency = Date.now() - start;
+    res.json({
+      api: 'ok',
+      db: result.rows[0].ok === 1 ? 'connected' : 'error',
+      db_latency_ms: latency
+    });
   } catch (err) {
     res.status(503).json({ api: 'ok', db: 'error', detail: err.message });
   }
