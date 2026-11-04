@@ -80,7 +80,7 @@ class AuthStore {
 
   static AuthUser? get user => _instance._user;
 
-  static bool get isLoggedIn => _instance._isLoggedInCache ?? false;
+  static bool get isLoggedIn => _isLoggedInCache ?? false;
 
   static Future<void> clear() async {
     _instance._user = null;
