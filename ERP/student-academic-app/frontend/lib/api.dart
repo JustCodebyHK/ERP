@@ -38,7 +38,7 @@ class ApiClient {
 
   Future<http.Response> post(String path, {Map<String, dynamic>? body}) async {
     final uri = Uri.parse('$baseUrl$path');
-    final allHeaders = {'Content-Type': 'application/json', ..._authHeaders()};
+    final allHeaders = {'Content-Type': 'application/json', ...?headers, ..._authHeaders()};
     return client.post(uri,
         headers: allHeaders,
         body: body != null ? jsonEncode(body) : null).timeout(timeout);
@@ -162,7 +162,7 @@ Future<void> apiUploadFile(String path, String fieldName, File file,
 
 Future<Map<String, dynamic>> apiUploadBytes(String path, String fieldName,
     List<int> bytes, String fileName,
-    {Map<String, String>? fields}) async {
+    [Map<String, String>? fields]) async {
   final client = http.Client();
   try {
     final uri = Uri.parse('http://localhost:4000$path');
