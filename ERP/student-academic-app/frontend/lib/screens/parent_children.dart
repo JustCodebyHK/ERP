@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../api.dart';
+import '../models/child.dart';
 import '../models/parent.dart';
 import '../widgets/app_theme.dart';
 import 'parent_child_overview.dart';
