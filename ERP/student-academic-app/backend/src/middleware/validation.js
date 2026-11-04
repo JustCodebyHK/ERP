@@ -361,4 +361,10 @@ function isBatchSemester(value) {
   if (!['odd','even'].includes(value)) { return { valid: false, error: 'Batch semester must be odd or even' }; } return { valid: true };
 }
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester };
+
+
+function isAcademicYear(value) {
+  const n = Number(value); if (!Number.isInteger(n) || n < 2020 || n > 2030) { return { valid: false, error: 'Invalid academic year' }; } return { valid: true };
+}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear };
