@@ -1,55 +1,53 @@
-/// Timetable entry model from API
-class TimetableEntry {
-  final String id;
-  final String batchId;
-  final String subjectId;
-  final int dayOfWeek;
+﻿class TimetableEntry {
+  final int id;
+  final String dayOfWeek;
   final String startTime;
   final String endTime;
-  final String? room;
-  final String? teacherId;
-  final DateTime createdAt;
-  final String? batchName;
-  final String? subjectCode;
-  final String? subjectName;
+  final int durationMinutes;
+  final int subjectId;
 
   TimetableEntry({
     required this.id,
-    required this.batchId,
-    required this.subjectId,
     required this.dayOfWeek,
     required this.startTime,
     required this.endTime,
-    this.room,
-    this.teacherId,
-    required this.createdAt,
-    this.batchName,
-    this.subjectCode,
-    this.subjectName,
+    required this.durationMinutes,
+    required this.subjectId,
   });
 
-  factory TimetableEntry.fromJson(Map<String, dynamic> json) => TimetableEntry(
-        id: json['id'] as String,
-        batchId: json['batch_id'] as String,
-        subjectId: json['subject_id'] as String,
-        dayOfWeek: json['day_of_week'] as int,
-        startTime: json['start_time'] as String,
-        endTime: json['end_time'] as String,
-        room: json['room'] as String?,
-        teacherId: json['teacher_id'] as String?,
-        createdAt: DateTime.parse(json['created_at'] as String),
-        batchName: json['batch_name'] as String?,
-        subjectCode: json['subject_code'] as String?,
-        subjectName: json['subject_name'] as String?,
-      );
+  factory TimetableEntry.fromJson(Map<String, dynamic> json) {
+    return TimetableEntry(
+      id: json['id'] as int,
+      dayOfWeek: json['day_of_week'] as String,
+      startTime: json['start_time'] as String,
+      endTime: json['end_time'] as String,
+      durationMinutes: json['duration_minutes'] as int,
+      subjectId: json['subject_id'] as int,
+    );
+  }
 
-  static const List<String> days = [
-    'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
-  ];
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'day_of_week': dayOfWeek,
+      'start_time': startTime,
+      'end_time': endTime,
+      'duration_minutes': durationMinutes,
+      'subject_id': subjectId,
+    };
+  }
 
-  String get dayName => days[dayOfWeek];
+  TimetableEntry copyWith({String? startTime, String? endTime}) {
+    return TimetableEntry(
+      id: id,
+      dayOfWeek: dayOfWeek,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      durationMinutes: durationMinutes,
+      subjectId: subjectId,
+    );
+  }
 
-  String get timeRange => '$startTime - $endTime';
-
-  String get displayRoom => room ?? 'TBA';
+  @override
+  String toString() => 'TimetableEntry(id: , day: , -)';
 }
