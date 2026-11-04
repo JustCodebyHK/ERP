@@ -33,6 +33,10 @@ function clearBlacklist() {
   blacklistedTokens.clear();
 }
 
+function getBlacklistSize() {
+  return blacklistedTokens.size;
+}
+
 function extractToken(req) {
   const header = req.headers.authorization || '';
   return header.startsWith('Bearer ') ? header.slice(7) : null;
@@ -137,4 +141,4 @@ function requireSelfOrRole(allowedRoles, idParam = 'id') {
   };
 }
 
-module.exports = { authRequired, optionalAuth, requireRole, requireAnyRole, requireSelfOrRole, rateLimiter, blacklistToken, isBlacklisted, clearBlacklist, extractToken, getTokenExpiry, isTokenExpired, getUserIdFromToken };
+module.exports = { authRequired, optionalAuth, requireRole, requireAnyRole, requireSelfOrRole, rateLimiter, blacklistToken, isBlacklisted, clearBlacklist, getBlacklistSize, extractToken, getTokenExpiry, isTokenExpired, getUserIdFromToken };
