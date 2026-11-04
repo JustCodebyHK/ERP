@@ -666,7 +666,7 @@ class _AnnouncementsTab extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: a.color.withValues(alpha: 0.1),
+                            color: (a.color ?? Colors.blue).withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Icon(a.icon, color: a.color, size: 24),
@@ -691,7 +691,7 @@ class _AnnouncementsTab extends StatelessWidget {
                                       a.typeLabel,
                                       style: const TextStyle(fontSize: 11),
                                     ),
-                                    backgroundColor: a.color.withValues(
+                                    backgroundColor: (a.color ?? Colors.blue).withValues(
                                       alpha: 0.1,
                                     ),
                                     labelStyle: TextStyle(color: a.color),
