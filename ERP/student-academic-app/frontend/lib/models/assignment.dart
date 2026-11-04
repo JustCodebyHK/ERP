@@ -6,6 +6,8 @@
   final DateTime dueDate;
   final String status;
   final String? fileUrl;
+  final int? maxScore;
+  final int? obtainedScore;
 
   Assignment({
     required this.id,
@@ -15,6 +17,8 @@
     required this.dueDate,
     this.status = 'pending',
     this.fileUrl,
+    this.maxScore,
+    this.obtainedScore,
   });
 
   factory Assignment.fromJson(Map<String, dynamic> json) {
@@ -26,6 +30,8 @@
       dueDate: DateTime.parse(json['due_date'] as String),
       status: json['status'] as String? ?? 'pending',
       fileUrl: json['file_url'] as String?,
+      maxScore: json['max_score'] as int?,
+      obtainedScore: json['obtained_score'] as int?,
     );
   }
 
@@ -38,12 +44,17 @@
       'due_date': dueDate.toIso8601String(),
       'status': status,
       'file_url': fileUrl,
+      'max_score': maxScore,
+      'obtained_score': obtainedScore,
     };
   }
 
   bool get isOverdue => DateTime.now().isAfter(dueDate) && status != 'submitted';
+  double? get percentage => maxScore != null && maxScore! > 0 && obtainedScore != null
+      ? (obtainedScore! / maxScore!) * 100
+      : null;
 
-  Assignment copyWith({String? status, String? fileUrl}) {
+  Assignment copyWith({String? status, String? fileUrl, int? maxScore, int? obtainedScore}) {
     return Assignment(
       id: id,
       title: title,
@@ -52,6 +63,8 @@
       dueDate: dueDate,
       status: status ?? this.status,
       fileUrl: fileUrl ?? this.fileUrl,
+      maxScore: maxScore ?? this.maxScore,
+      obtainedScore: obtainedScore ?? this.obtainedScore,
     );
   }
 
