@@ -1,5 +1,4 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationService {
@@ -29,7 +28,7 @@ class NotificationService {
     return;
   }
 
-  static Future<void> requestPermissionWithHelp(BuildContext context) async {
+  static Future<void> requestPermissionWithHelp() async {
     return;
   }
 
