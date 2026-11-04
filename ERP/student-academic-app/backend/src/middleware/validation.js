@@ -457,4 +457,10 @@ function isReportType(value) {
   if (!['attendance','grades','growth','financial','audit'].includes(value)) { return { valid: false, error: 'Invalid report type' }; } return { valid: true };
 }
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear, isEnrollmentStatus, isMarksRange, isAttendancePercentage, isTimetableSlot, isPlannerEventType, isGrowthMetric, isAnnouncementTarget, isParentChildRelation, isGroupChatMessageLength, isSubmissionTemplateType, isFileUploadBatch, isBulkOperation, isExportFormat, isImportFormat, isReportType };
+
+
+function isDashboardWidget(value) {
+  if (!['stats','chart','list','calendar','feed'].includes(value)) { return { valid: false, error: 'Invalid dashboard widget' }; } return { valid: true };
+}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear, isEnrollmentStatus, isMarksRange, isAttendancePercentage, isTimetableSlot, isPlannerEventType, isGrowthMetric, isAnnouncementTarget, isParentChildRelation, isGroupChatMessageLength, isSubmissionTemplateType, isFileUploadBatch, isBulkOperation, isExportFormat, isImportFormat, isReportType, isDashboardWidget };
