@@ -1,26 +1,36 @@
 class AttendanceSummary {
-  final String date;
-  final String status;
+  final String name;
+  final String code;
+  final int attended;
+  final int totalLectures;
 
   AttendanceSummary({
-    required this.date,
-    required this.status,
+    required this.name,
+    required this.code,
+    required this.attended,
+    required this.totalLectures,
   });
 
   factory AttendanceSummary.fromJson(Map<String, dynamic> json) {
     return AttendanceSummary(
-      date: json['date'] as String,
-      status: json['status'] as String,
+      name: json['name'] as String,
+      code: json['code'] as String,
+      attended: json['attended'] as int,
+      totalLectures: json['total_lectures'] as int,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'date': date,
-      'status': status,
+      'name': name,
+      'code': code,
+      'attended': attended,
+      'total_lectures': totalLectures,
     };
   }
 
+  double get percentage => totalLectures > 0 ? (attended / totalLectures) * 100 : 0.0;
+
   @override
-  String toString() => 'AttendanceSummary(date: $date, status: $status)';
+  String toString() => 'AttendanceSummary(name: $name, percentage: $percentage%)';
 }

@@ -1,9 +1,9 @@
 class Child {
-  final int id;
+  final String id;
   final String name;
   final String email;
   final String rollNumber;
-  final int? classId;
+  final String relationship;
   final String? className;
 
   Child({
@@ -11,17 +11,17 @@ class Child {
     required this.name,
     required this.email,
     required this.rollNumber,
-    this.classId,
+    required this.relationship,
     this.className,
   });
 
   factory Child.fromJson(Map<String, dynamic> json) {
     return Child(
-      id: json['id'] as int,
+      id: json['id'] as String,
       name: json['name'] as String,
       email: json['email'] as String,
       rollNumber: json['roll_number'] as String,
-      classId: json['class_id'] as int?,
+      relationship: json['relationship'] as String,
       className: json['class_name'] as String?,
     );
   }
@@ -32,11 +32,11 @@ class Child {
       'name': name,
       'email': email,
       'roll_number': rollNumber,
-      'class_id': classId,
+      'relationship': relationship,
       'class_name': className,
     };
   }
 
   @override
-  String toString() => 'Child(id: $id, name: $name, roll: $rollNumber)';
+  String toString() => 'Child(id: $id, name: $name, relationship: $relationship)';
 }

@@ -1,7 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 
 class SubmissionTemplate {
-  final int id;
+  final String id;
   final String type;
   final String title;
   final int version;
@@ -25,7 +25,7 @@ class SubmissionTemplate {
 
   factory SubmissionTemplate.fromJson(Map<String, dynamic> json) {
     return SubmissionTemplate(
-      id: json['id'] as int,
+      id: json['id'] as String,
       type: json['type'] as String,
       title: json['title'] as String,
       version: json['version'] as int,
@@ -51,16 +51,18 @@ class SubmissionTemplate {
     };
   }
 
-  SubmissionTemplate copyWith({int? version, bool? isCurrent}) {
+  SubmissionTemplate copyWith({String? id, String? type, String? title, int? version,
+    int? fileSize, String? fileUrl, DateTime? createdAt, bool? isCurrent, String? originalName}) {
     return SubmissionTemplate(
-      id: id,
-      type: type,
-      title: title,
+      id: id ?? this.id,
+      type: type ?? this.type,
+      title: title ?? this.title,
       version: version ?? this.version,
-      fileSize: fileSize,
-      fileUrl: fileUrl,
-      createdAt: createdAt,
+      fileSize: fileSize ?? this.fileSize,
+      fileUrl: fileUrl ?? this.fileUrl,
+      createdAt: createdAt ?? this.createdAt,
       isCurrent: isCurrent ?? this.isCurrent,
+      originalName: originalName ?? this.originalName,
     );
   }
 

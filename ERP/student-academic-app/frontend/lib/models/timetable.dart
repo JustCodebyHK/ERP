@@ -1,6 +1,6 @@
 ﻿class TimetableEntry {
   final int id;
-  final String dayOfWeek;
+  final int dayOfWeek;
   final String startTime;
   final String endTime;
   final int durationMinutes;
@@ -26,7 +26,7 @@
   factory TimetableEntry.fromJson(Map<String, dynamic> json) {
     return TimetableEntry(
       id: json['id'] as int,
-      dayOfWeek: json['day_of_week'] as String,
+      dayOfWeek: json['day_of_week'] as int,
       startTime: json['start_time'] as String,
       endTime: json['end_time'] as String,
       durationMinutes: json['duration_minutes'] as int,

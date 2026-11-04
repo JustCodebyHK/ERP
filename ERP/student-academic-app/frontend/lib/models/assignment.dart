@@ -1,8 +1,8 @@
 ﻿class Assignment {
-  final int id;
+  final String id;
   final String title;
   final String description;
-  final int subjectId;
+  final String subjectId;
   final DateTime dueAt;
   final String status;
   final String? fileUrl;
@@ -33,10 +33,10 @@
 
   factory Assignment.fromJson(Map<String, dynamic> json) {
     return Assignment(
-      id: json['id'] as int,
+      id: json['id'] as String,
       title: json['title'] as String,
       description: json['description'] as String,
-      subjectId: json['subject_id'] as int,
+      subjectId: json['subject_id'] as String,
       dueAt: DateTime.parse(json['due_at'] as String),
       status: json['status'] as String? ?? 'pending',
       fileUrl: json['file_url'] as String?,
@@ -74,19 +74,35 @@
   bool get isSubmitted => status == 'submitted';
   bool get isGraded => obtainedScore != null;
   bool get isPending => status == 'pending';
+  bool get isDueToday => DateTime.now().difference(dueAt).inDays.abs() <= 1 && status != 'submitted';
   String get statusDisplay => status.toUpperCase();
 
   double? get percentage => maxScore != null && maxScore! > 0 && obtainedScore != null
       ? (obtainedScore! / maxScore!) * 100
       : null;
 
-  Assignment copyWith({String? status, String? fileUrl, int? maxScore, int? obtainedScore, int? received, int? totalSubmissions, String? subjectCode, String? subjectName, int? score}) {
+  Assignment copyWith({
+    String? id,
+    String? title,
+    String? description,
+    String? subjectId,
+    DateTime? dueAt,
+    String? status,
+    String? fileUrl,
+    int? maxScore,
+    int? obtainedScore,
+    int? received,
+    int? totalSubmissions,
+    String? subjectCode,
+    String? subjectName,
+    int? score,
+  }) {
     return Assignment(
-      id: id,
-      title: title,
-      description: description,
-      subjectId: subjectId,
-      dueAt: dueAt,
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      subjectId: subjectId ?? this.subjectId,
+      dueAt: dueAt ?? this.dueAt,
       status: status ?? this.status,
       fileUrl: fileUrl ?? this.fileUrl,
       maxScore: maxScore ?? this.maxScore,

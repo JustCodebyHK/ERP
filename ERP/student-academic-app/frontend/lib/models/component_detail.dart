@@ -1,42 +1,42 @@
+import 'package:flutter/material.dart';
+
 class ComponentDetail {
   final String label;
-  final double value;
-  final double maxValue;
+  final double score;
+  final double weight;
   final String unit;
-  final List<Map<String, dynamic>> items;
+  final Map<String, dynamic>? details;
 
   ComponentDetail({
     required this.label,
-    required this.value,
-    required this.maxValue,
+    required this.score,
+    required this.weight,
     required this.unit,
-    this.items = const [],
+    this.details,
   });
 
   factory ComponentDetail.fromJson(Map<String, dynamic> json) {
     return ComponentDetail(
       label: json['label'] as String,
-      value: (json['value'] as num).toDouble(),
-      maxValue: (json['max_value'] as num).toDouble(),
+      score: (json['score'] as num).toDouble(),
+      weight: (json['weight'] as num).toDouble(),
       unit: json['unit'] as String,
-      items: (json['items'] as List?)
-          ?.map((e) => e as Map<String, dynamic>)
-          .toList() ?? [],
+      details: json['details'] as Map<String, dynamic>?,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'label': label,
-      'value': value,
-      'max_value': maxValue,
+      'score': score,
+      'weight': weight,
       'unit': unit,
-      'items': items,
+      'details': details,
     };
   }
 
-  double get percentage => maxValue > 0 ? (value / maxValue) * 100 : 0.0;
+  double get percentage => weight > 0 ? (score / weight) * 100 : 0.0;
 
   @override
-  String toString() => 'ComponentDetail(label: $label, value: $value/$maxValue $unit)';
+  String toString() => 'ComponentDetail(label: $label, score: $score/$weight $unit)';
 }

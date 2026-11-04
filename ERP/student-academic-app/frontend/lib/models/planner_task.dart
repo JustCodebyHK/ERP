@@ -1,11 +1,16 @@
+import 'package:flutter/material.dart';
+
 class PlannerTask {
-  final int id;
-  final int? timetableEntryId;
+  final String id;
+  final String? timetableEntryId;
   final String title;
   final String? description;
   final int priority;
-  final DateTime scheduledFor;
+  final DateTime dueAt;
   final bool isCompleted;
+  final bool hasTimetableLink;
+  final DateTime? startTime;
+  final DateTime? endTime;
 
   PlannerTask({
     required this.id,
@@ -13,19 +18,25 @@ class PlannerTask {
     required this.title,
     this.description,
     required this.priority,
-    required this.scheduledFor,
+    required this.dueAt,
     this.isCompleted = false,
+    this.hasTimetableLink = false,
+    this.startTime,
+    this.endTime,
   });
 
   factory PlannerTask.fromJson(Map<String, dynamic> json) {
     return PlannerTask(
-      id: json['id'] as int,
-      timetableEntryId: json['timetable_entry_id'] as int?,
+      id: json['id'] as String,
+      timetableEntryId: json['timetable_entry_id'] as String?,
       title: json['title'] as String,
       description: json['description'] as String?,
       priority: json['priority'] as int,
-      scheduledFor: DateTime.parse(json['scheduled_for'] as String),
+      dueAt: DateTime.parse(json['due_at'] as String),
       isCompleted: json['is_completed'] as bool? ?? false,
+      hasTimetableLink: json['has_timetable_link'] as bool? ?? false,
+      startTime: json['start_time'] != null ? DateTime.parse(json['start_time'] as String) : null,
+      endTime: json['end_time'] != null ? DateTime.parse(json['end_time'] as String) : null,
     );
   }
 
@@ -36,10 +47,15 @@ class PlannerTask {
       'title': title,
       'description': description,
       'priority': priority,
-      'scheduled_for': scheduledFor.toIso8601String(),
+      'due_at': dueAt.toIso8601String(),
       'is_completed': isCompleted,
+      'has_timetable_link': hasTimetableLink,
+      'start_time': startTime?.toIso8601String(),
+      'end_time': endTime?.toIso8601String(),
     };
   }
+
+  bool get isOverdue => DateTime.now().isAfter(dueAt) && !isCompleted;
 
   String get priorityLabel {
     switch (priority) {
@@ -60,13 +76,16 @@ class PlannerTask {
   }
 
   PlannerTask copyWith({
-    int? id,
-    int? timetableEntryId,
+    String? id,
+    String? timetableEntryId,
     String? title,
     String? description,
     int? priority,
-    DateTime? scheduledFor,
+    DateTime? dueAt,
     bool? isCompleted,
+    bool? hasTimetableLink,
+    DateTime? startTime,
+    DateTime? endTime,
   }) {
     return PlannerTask(
       id: id ?? this.id,
@@ -74,13 +93,23 @@ class PlannerTask {
       title: title ?? this.title,
       description: description ?? this.description,
       priority: priority ?? this.priority,
-      scheduledFor: scheduledFor ?? this.scheduledFor,
+      dueAt: dueAt ?? this.dueAt,
       isCompleted: isCompleted ?? this.isCompleted,
+      hasTimetableLink: hasTimetableLink ?? this.hasTimetableLink,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
     );
   }
 
   @override
   String toString() => 'PlannerTask(id: $id, title: $title, priority: $priority)';
-}
 
-import 'package:flutter/material.dart';
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is PlannerTask && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
+}

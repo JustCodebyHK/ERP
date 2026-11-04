@@ -1,27 +1,30 @@
+import 'package:flutter/material.dart';
+import 'component_detail.dart';
+
 class GrowthIndex {
-  final double overall;
+  final double growthIndex;
   final Map<String, ComponentDetail> components;
 
   GrowthIndex({
-    required this.overall,
+    required this.growthIndex,
     required this.components,
   });
 
   factory GrowthIndex.fromJson(Map<String, dynamic> json) {
     return GrowthIndex(
-      overall: (json['overall'] as num).toDouble(),
+      growthIndex: (json['growth_index'] as num).toDouble(),
       components: (json['components'] as Map<String, dynamic>)
-          .map((key, value) => MapEntry(key, ComponentDetail.fromJson(value))),
+          .map((key, value) => MapEntry(key, ComponentDetail.fromJson(value as Map<String, dynamic>))),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'overall': overall,
+      'growth_index': growthIndex,
       'components': components.map((key, value) => MapEntry(key, value.toJson())),
     };
   }
 
   @override
-  String toString() => 'GrowthIndex(overall: $overall)';
+  String toString() => 'GrowthIndex(index: $growthIndex)';
 }
