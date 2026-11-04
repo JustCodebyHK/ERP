@@ -6,6 +6,9 @@
   final int durationMinutes;
   final int subjectId;
   final String? room;
+  final String? subjectName;
+  final String? subjectCode;
+  final String? batchName;
 
   TimetableEntry({
     required this.id,
@@ -15,6 +18,9 @@
     required this.durationMinutes,
     required this.subjectId,
     this.room,
+    this.subjectName,
+    this.subjectCode,
+    this.batchName,
   });
 
   factory TimetableEntry.fromJson(Map<String, dynamic> json) {
@@ -26,6 +32,9 @@
       durationMinutes: json['duration_minutes'] as int,
       subjectId: json['subject_id'] as int,
       room: json['room'] as String?,
+      subjectName: json['subject_name'] as String?,
+      subjectCode: json['subject_code'] as String?,
+      batchName: json['batch_name'] as String?,
     );
   }
 
@@ -38,6 +47,9 @@
       'duration_minutes': durationMinutes,
       'subject_id': subjectId,
       'room': room,
+      'subject_name': subjectName,
+      'subject_code': subjectCode,
+      'batch_name': batchName,
     };
   }
 

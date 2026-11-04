@@ -10,6 +10,9 @@
   final int? obtainedScore;
   final int? received;
   final int? totalSubmissions;
+  final String? subjectCode;
+  final String? subjectName;
+  final int? score;
 
   Assignment({
     required this.id,
@@ -23,6 +26,9 @@
     this.obtainedScore,
     this.received,
     this.totalSubmissions,
+    this.subjectCode,
+    this.subjectName,
+    this.score,
   });
 
   factory Assignment.fromJson(Map<String, dynamic> json) {
@@ -38,6 +44,9 @@
       obtainedScore: json['obtained_score'] as int?,
       received: json['received'] as int?,
       totalSubmissions: json['total_submissions'] as int?,
+      subjectCode: json['subject_code'] as String?,
+      subjectName: json['subject_name'] as String?,
+      score: json['score'] as int?,
     );
   }
 
@@ -54,15 +63,24 @@
       'obtained_score': obtainedScore,
       'received': received,
       'total_submissions': totalSubmissions,
+      'subject_code': subjectCode,
+      'subject_name': subjectName,
+      'score': score,
     };
   }
 
   bool get isOverdue => DateTime.now().isAfter(dueAt) && status != 'submitted';
+  bool get isLate => DateTime.now().isAfter(dueAt) && status != 'submitted';
+  bool get isSubmitted => status == 'submitted';
+  bool get isGraded => obtainedScore != null;
+  bool get isPending => status == 'pending';
+  String get statusDisplay => status.toUpperCase();
+
   double? get percentage => maxScore != null && maxScore! > 0 && obtainedScore != null
       ? (obtainedScore! / maxScore!) * 100
       : null;
 
-  Assignment copyWith({String? status, String? fileUrl, int? maxScore, int? obtainedScore, int? received, int? totalSubmissions}) {
+  Assignment copyWith({String? status, String? fileUrl, int? maxScore, int? obtainedScore, int? received, int? totalSubmissions, String? subjectCode, String? subjectName, int? score}) {
     return Assignment(
       id: id,
       title: title,
@@ -75,6 +93,9 @@
       obtainedScore: obtainedScore ?? this.obtainedScore,
       received: received ?? this.received,
       totalSubmissions: totalSubmissions ?? this.totalSubmissions,
+      subjectCode: subjectCode ?? this.subjectCode,
+      subjectName: subjectName ?? this.subjectName,
+      score: score ?? this.score,
     );
   }
 

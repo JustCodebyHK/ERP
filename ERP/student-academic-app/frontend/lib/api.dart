@@ -223,7 +223,7 @@ Future<void> apiDownloadFile(String url, String destPath) async {
 // ============================================================================
 // Assignments API
 // ============================================================================
-Future<Map<String, dynamic>> apiListAssignments(int batchId, int subjectId) async {
+Future<Map<String, dynamic>> apiListAssignments(String batchId, String subjectId) async {
   return apiGet('/api/assignments?batch_id=$batchId&subject_id=$subjectId');
 }
 
@@ -231,7 +231,7 @@ Future<Map<String, dynamic>> apiCreateAssignment(Map<String, dynamic> body) asyn
   return apiPost('/api/assignments', body: body);
 }
 
-Future<Map<String, dynamic>> apiAssignmentSubmissions(int assignmentId) async {
+Future<Map<String, dynamic>> apiAssignmentSubmissions(String assignmentId) async {
   return apiGet('/api/assignments/$assignmentId/submissions');
 }
 
@@ -243,7 +243,7 @@ Future<Map<String, dynamic>> apiGradeSubmission(int assignmentId, int studentId,
 // ============================================================================
 // Timetable API
 // ============================================================================
-Future<Map<String, dynamic>> apiListTimetable(int batchId, int subjectId) async {
+Future<Map<String, dynamic>> apiListTimetable(String batchId, String subjectId) async {
   return apiGet('/api/timetable?batch_id=$batchId&subject_id=$subjectId');
 }
 
@@ -271,7 +271,7 @@ Future<Map<String, dynamic>> apiCreateAnnouncement(Map<String, dynamic> body) as
   return apiPost('/api/announcements', body: body);
 }
 
-Future<Map<String, dynamic>> apiDeleteAnnouncement(int id) async {
+Future<Map<String, dynamic>> apiDeleteAnnouncement(String id) async {
   return apiDelete('/api/announcements/$id');
 }
 
@@ -309,24 +309,24 @@ Future<Map<String, dynamic>> apiCreateGroup(Map<String, dynamic> body) async {
   return apiPost('/api/groups', body: body);
 }
 
-Future<Map<String, dynamic>> apiGetGroupMembers(int groupId) async {
+Future<Map<String, dynamic>> apiGetGroupMembers(String groupId) async {
   return apiGet('/api/groups/$groupId/members');
 }
 
-Future<Map<String, dynamic>> apiGetGroup(int groupId) async {
+Future<Map<String, dynamic>> apiGetGroup(String groupId) async {
   return apiGet('/api/groups/$groupId');
 }
 
-Future<Map<String, dynamic>> apiAddGroupMember(int groupId,
-    {required int userId, String role = 'member'}) async {
+Future<Map<String, dynamic>> apiAddGroupMember(String groupId,
+    {required String userId, String role = 'member'}) async {
   return apiPost('/api/groups/$groupId/members', body: {'user_id': userId, 'role': role});
 }
 
-Future<Map<String, dynamic>> apiRemoveGroupMember(int groupId, int userId) async {
+Future<Map<String, dynamic>> apiRemoveGroupMember(String groupId, String userId) async {
   return apiDelete('/api/groups/$groupId/members/$userId');
 }
 
-Future<Map<String, dynamic>> apiUpdateGroupMemberRole(int groupId, int userId, String role) async {
+Future<Map<String, dynamic>> apiUpdateGroupMemberRole(String groupId, String userId, String role) async {
   return apiPost('/api/groups/$groupId/members/$userId', body: {'role': role});
 }
 
@@ -341,37 +341,108 @@ Future<Map<String, dynamic>> apiLinkChild(String email, String relation) async {
   return apiPost('/api/parent/link-child', body: {'email': email, 'relation': relation});
 }
 
-Future<Map<String, dynamic>> apiChildOverview(int childId) async {
+Future<Map<String, dynamic>> apiChildOverview(String childId) async {
   return apiGet('/api/parent/children/$childId/overview');
 }
 
-Future<Map<String, dynamic>> apiChildAttendance(int childId) async {
+Future<Map<String, dynamic>> apiChildAttendance(String childId) async {
   return apiGet('/api/parent/children/$childId/attendance');
 }
 
-Future<Map<String, dynamic>> apiChildMarks(int childId) async {
+Future<Map<String, dynamic>> apiChildMarks(String childId) async {
   return apiGet('/api/parent/children/$childId/marks');
 }
 
-Future<Map<String, dynamic>> apiChildAssignments(int childId) async {
+Future<Map<String, dynamic>> apiChildAssignments(String childId) async {
   return apiGet('/api/parent/children/$childId/assignments');
 }
 
-Future<Map<String, dynamic>> apiChildAnnouncements(int childId) async {
+Future<Map<String, dynamic>> apiChildAnnouncements(String childId) async {
   return apiGet('/api/parent/children/$childId/announcements');
 }
 
 // ============================================================================
 // Planner API
 // ============================================================================
-Future<Map<String, dynamic>> apiCompletePlannerTask(int taskId) async {
+Future<Map<String, dynamic>> apiCompletePlannerTask(String taskId) async {
   return apiPost('/api/planner/tasks/$taskId/complete', body: {});
 }
 
-Future<Map<String, dynamic>> apiCarryForwardPlannerTask(int taskId) async {
+Future<Map<String, dynamic>> apiCarryForwardPlannerTask(String taskId) async {
   return apiPost('/api/planner/tasks/$taskId/carry-forward', body: {});
 }
 
-Future<Map<String, dynamic>> apiDeletePlannerTask(int taskId) async {
+Future<Map<String, dynamic>> apiDeletePlannerTask(String taskId) async {
   return apiDelete('/api/planner/tasks/$taskId');
 }
+
+// ============================================================================
+// Student Assignments API
+// ============================================================================
+Future<Map<String, dynamic>> apiSubmitAssignmentBytes(String assignmentId,
+    List<int> bytes, String fileName,
+    {String? mimeType}) async {
+  return apiUploadBytes('/api/assignments/$assignmentId/submission', 'file',
+      bytes, fileName, fields: {'mime_type': mimeType ?? 'application/pdf'});
+}
+
+// ============================================================================
+// Planner API (extended)
+// ============================================================================
+Future<Map<String, dynamic>> apiGetPlannerTasks(String date) async {
+  return apiGet('/api/planner/tasks?date=$date');
+}
+
+Future<Map<String, dynamic>> apiGetPlannerWeek(String weekStart) async {
+  return apiGet('/api/planner/tasks/week?start=$weekStart');
+}
+
+Future<Map<String, dynamic>> apiDailyDigest() async {
+  return apiGet('/api/planner/digest/today');
+}
+
+Future<Map<String, dynamic>> apiCreatePlannerTask(Map<String, dynamic> body) async {
+  return apiPost('/api/planner/tasks', body: body);
+}
+
+// ============================================================================
+// Announcements API (extended)
+// ============================================================================
+Future<Map<String, dynamic>> apiListAnnouncementsCached({String? batchId}) async {
+  final query = batchId != null ? '?batch_id=$batchId' : '';
+  return apiGet('/api/announcements$query');
+}
+
+Future<Map<String, dynamic>> apiUnreadAnnouncementsCount() async {
+  return apiGet('/api/announcements/unread_count');
+}
+
+Future<Map<String, dynamic>> apiMarkAnnouncementRead(int id) async {
+  return apiPost('/api/announcements/$id/read', body: {});
+}
+
+// ============================================================================
+// Submission Kit API (extended)
+// ============================================================================
+Future<Map<String, dynamic>> apiListTemplatesCached() async {
+  return apiGet('/api/submission-kit');
+}
+
+Future<Map<String, dynamic>> apiDownloadTemplate(String id, String destPath) async {
+  return apiDownloadFile('/api/submission-kit/$id/download', destPath);
+}
+
+// ============================================================================
+// Groups API (extended)
+// ============================================================================
+Future<Map<String, dynamic>> apiJoinGroup(String inviteCode) async {
+  return apiPost('/api/groups/join', body: {'invite_code': inviteCode});
+}
+
+// ============================================================================
+// Growth API
+// ============================================================================
+Future<Map<String, dynamic>> apiMyGrowth() async {
+  return apiGet('/api/growth/my');
+}
+
