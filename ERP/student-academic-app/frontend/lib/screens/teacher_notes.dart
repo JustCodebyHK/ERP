@@ -150,18 +150,15 @@ class _TeacherNotesScreenState extends State<TeacherNotesScreen> {
       final mimeType = _getMimeType(pickedFile.name);
       if (pickedFile.path != null) {
         final file = File(pickedFile.path!);
-        await apiUploadFile('/api/notes', 'file', file, pickedFile.name, {
-          'subject_id': widget.subjectId,
-          'title': pickedFile.name,
-        }, mimeType: mimeType);
+        await apiUploadFile('/api/notes', 'file', file, pickedFile.name,
+            fields: {'subject_id': widget.subjectId, 'title': pickedFile.name});
       } else if (pickedFile.bytes != null) {
         await apiUploadBytes(
           '/api/notes',
           'file',
           pickedFile.bytes!,
           pickedFile.name,
-          {'subject_id': widget.subjectId, 'title': pickedFile.name},
-          mimeType: mimeType,
+          fields: {'subject_id': widget.subjectId, 'title': pickedFile.name},
         );
       } else {
         throw Exception(
@@ -330,7 +327,7 @@ class _TeacherNotesScreenState extends State<TeacherNotesScreen> {
       final perm = await ensureStoragePermission(context);
       final notesDir = await resolveDownloadDirectory('Notes');
       final dest =
-          '${notesDir.path}${Platform.pathSeparator}${note.originalName}';
+          '${notesDir}${Platform.pathSeparator}${note.originalName}';
 
       await apiDownloadFile('/api/notes/${note.id}/download', dest);
 
@@ -351,7 +348,7 @@ class _TeacherNotesScreenState extends State<TeacherNotesScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              perm.granted
+              perm
                   ? 'Saved to Downloads/Notes and opened ${note.originalName}'
                   : 'Downloaded and opened ${note.originalName} (in app storage)',
             ),
