@@ -19,7 +19,7 @@ class AuthStore {
 
   final _storage = const FlutterSecureStorage();
   AuthUser? _user;
-  static bool? _isLoggedInCache;
+  bool? _isLoggedInCache;
 
   static const _tokenKey = 'auth_token';
   static const _refreshKey = 'refresh_token';
