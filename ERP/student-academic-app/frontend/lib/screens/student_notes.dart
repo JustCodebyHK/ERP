@@ -229,7 +229,7 @@ class _StudentNotesScreenState extends State<StudentNotesScreen> {
       final perm = await ensureStoragePermission(context);
       final notesDir = await resolveDownloadDirectory('Notes');
       final dest =
-          '${notesDir.path}${Platform.pathSeparator}${note.originalName}';
+          '${notesDir}${Platform.pathSeparator}${note.originalName}';
 
       await apiDownloadFile('/api/notes/${note.id}/download', dest);
 
@@ -245,7 +245,7 @@ class _StudentNotesScreenState extends State<StudentNotesScreen> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(perm.granted
+            content: Text(perm
                 ? 'Saved to Downloads/Notes and opened ${note.originalName}'
                 : 'Downloaded and opened ${note.originalName} (in app storage)'),
           ),
