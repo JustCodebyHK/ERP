@@ -421,4 +421,10 @@ function isGroupChatMessageLength(value) {
   if (typeof value !== 'string' || value.length < 1 || value.length > 1000) { return { valid: false, error: 'Message must be 1-1000 characters' }; } return { valid: true };
 }
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear, isEnrollmentStatus, isMarksRange, isAttendancePercentage, isTimetableSlot, isPlannerEventType, isGrowthMetric, isAnnouncementTarget, isParentChildRelation, isGroupChatMessageLength };
+
+
+function isSubmissionTemplateType(value) {
+  if (!['front_page','index_page','certificate'].includes(value)) { return { valid: false, error: 'Invalid submission template type' }; } return { valid: true };
+}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear, isEnrollmentStatus, isMarksRange, isAttendancePercentage, isTimetableSlot, isPlannerEventType, isGrowthMetric, isAnnouncementTarget, isParentChildRelation, isGroupChatMessageLength, isSubmissionTemplateType };
