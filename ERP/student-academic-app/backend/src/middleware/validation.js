@@ -343,4 +343,10 @@ function isFileSizeRange(value) {
   const n = Number(value); if (!Number.isInteger(n) || n < 1 || n > 100) { return { valid: false, error: 'File size must be 1-100 MB' }; } return { valid: true };
 }
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange };
+
+
+function isContentType(value) {
+  const allowed = ['application/pdf','image/jpeg','image/png','text/plain','application/msword']; if (!allowed.includes(value)) { return { valid: false, error: 'Unsupported content type' }; } return { valid: true };
+}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType };
