@@ -403,4 +403,10 @@ function isGrowthMetric(value) {
   if (!['attendance','grades','participation','improvement'].includes(value)) { return { valid: false, error: 'Invalid growth metric' }; } return { valid: true };
 }
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear, isEnrollmentStatus, isMarksRange, isAttendancePercentage, isTimetableSlot, isPlannerEventType, isGrowthMetric };
+
+
+function isAnnouncementTarget(value) {
+  if (!['all','student','teacher','parent','class','group'].includes(value)) { return { valid: false, error: 'Invalid announcement target' }; } return { valid: true };
+}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear, isEnrollmentStatus, isMarksRange, isAttendancePercentage, isTimetableSlot, isPlannerEventType, isGrowthMetric, isAnnouncementTarget };
