@@ -32,26 +32,30 @@ class ApiClient {
 
   Future<http.Response> get(String path, {Map<String, String>? headers}) async {
     final uri = Uri.parse('$baseUrl$path');
-    return client.get(uri, headers: {...?headers, ..._authHeaders()}).timeout(timeout);
+    final allHeaders = {...?headers, ..._authHeaders()};
+    return client.get(uri, headers: allHeaders).timeout(timeout);
   }
 
   Future<http.Response> post(String path, {Map<String, dynamic>? body}) async {
     final uri = Uri.parse('$baseUrl$path');
+    final allHeaders = {'Content-Type': 'application/json', ...?headers, ..._authHeaders()};
     return client.post(uri,
-        headers: {'Content-Type': 'application/json', ...?headers, ..._authHeaders()},
+        headers: allHeaders,
         body: body != null ? jsonEncode(body) : null).timeout(timeout);
   }
 
   Future<http.Response> put(String path, {Map<String, dynamic>? body}) async {
     final uri = Uri.parse('$baseUrl$path');
+    final allHeaders = {'Content-Type': 'application/json', ...?headers, ..._authHeaders()};
     return client.put(uri,
-        headers: {'Content-Type': 'application/json', ...?headers, ..._authHeaders()},
+        headers: allHeaders,
         body: body != null ? jsonEncode(body) : null).timeout(timeout);
   }
 
   Future<http.Response> delete(String path, {Map<String, String>? headers}) async {
     final uri = Uri.parse('$baseUrl$path');
-    return client.delete(uri, headers: {...?headers, ..._authHeaders()}).timeout(timeout);
+    final allHeaders = {...?headers, ..._authHeaders()};
+    return client.delete(uri, headers: allHeaders).timeout(timeout);
   }
 
   void dispose() {

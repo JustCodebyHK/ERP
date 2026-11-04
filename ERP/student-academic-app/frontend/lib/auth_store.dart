@@ -2,23 +2,13 @@
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class _User {
-  final Map<String, dynamic> _data;
-  _User(this._data);
-  dynamic operator [](String key) => _data[key];
-  String? get role => _data['role'] as String?;
-  String? get name => _data['name'] as String?;
-  String? get id => _data['id'] as String?;
-  String? get email => _data['email'] as String?;
-}
-
 class AuthStore {
   static final AuthStore _instance = AuthStore._internal();
   factory AuthStore() => _instance;
   AuthStore._internal();
 
   final _storage = const FlutterSecureStorage();
-  _User? _user;
+  Map<String, dynamic>? _user;
   bool? _isLoggedInCache;
 
   static const _tokenKey = 'auth_token';
@@ -45,7 +35,7 @@ class AuthStore {
   Future<String?> getRefreshToken() async => _storage.read(key: _refreshKey);
 
   Future<void> saveUser(Map<String, dynamic> user) async {
-    _user = _User(user);
+    _user = user;
     await _storage.write(key: _userKey, value: jsonEncode(user));
     _isLoggedInCache = true;
   }
@@ -65,28 +55,29 @@ class AuthStore {
     await saveUser(merged);
   }
 
-  _User? get user => _user;
-
   Future<Map<String, dynamic>?> getUser() async {
+    if (_user != null) return _user;
     final raw = await _storage.read(key: _userKey);
     if (raw == null) return null;
     try {
-      final data = jsonDecode(raw) as Map<String, dynamic>;
-      _user = _User(data);
-      return data;
+      _user = jsonDecode(raw) as Map<String, dynamic>;
+      return _user;
     } catch (_) {
       return null;
     }
   }
 
-  static bool get isLoggedIn => _instance._isLoggedInCache ?? false;
+  static Map<String, dynamic>? get user => _instance._user;
+
+  static bool get isLoggedIn => _isLoggedInCache ?? false;
 
   static Future<void> clear() async {
     _instance._user = null;
     _isLoggedInCache = false;
-    await _instance._storage.delete(key: _tokenKey);
-    await _instance._storage.delete(key: _refreshKey);
-    await _instance._storage.delete(key: _userKey);
+    final store = _instance;
+    await store._storage.delete(key: _tokenKey);
+    await store._storage.delete(key: _refreshKey);
+    await store._storage.delete(key: _userKey);
   }
 
   Future<void> logout() async {
