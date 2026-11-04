@@ -11,6 +11,14 @@ class GroupMessageWatcher {
   Function(String groupId)? onNewMessage;
   static String? activeGroupId;
 
+  void start() {
+    // No-op start for compatibility
+  }
+
+  void stop() {
+    stopWatching();
+  }
+
   void setWatchInterval(Duration interval) {
     _interval = interval;
   }

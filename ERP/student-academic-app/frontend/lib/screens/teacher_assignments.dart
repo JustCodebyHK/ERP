@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../api.dart';
 import '../models/assignment.dart';
+import '../models/submission.dart';
 import '../widgets/app_theme.dart';
 
 class TeacherAssignmentsScreen extends StatefulWidget {

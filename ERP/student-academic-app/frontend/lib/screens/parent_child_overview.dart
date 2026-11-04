@@ -3,6 +3,11 @@ import 'package:intl/intl.dart';
 
 import '../api.dart';
 import '../models/parent.dart';
+import '../models/child.dart';
+import '../models/attendance_summary.dart';
+import '../models/mark.dart';
+import '../models/parent_assignment_summary.dart';
+import '../models/parent_announcement.dart';
 import '../widgets/app_theme.dart';
 
 class ParentChildOverviewScreen extends StatefulWidget {

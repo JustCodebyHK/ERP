@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../api.dart';
 import '../models/growth.dart';
+import '../models/growth_index.dart';
+import '../models/component_detail.dart';
+import '../models/attendance_detail.dart';
+import '../models/mark_detail.dart';
 import '../widgets/app_theme.dart';
 
 class GrowthScreen extends StatefulWidget {

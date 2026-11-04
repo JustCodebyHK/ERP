@@ -156,12 +156,13 @@ Future<Map<String, dynamic>> apiPost(String path, {Map<String, dynamic>? body}) 
 // File upload/download helpers
 // ============================================================================
 Future<void> apiUploadFile(String path, String fieldName, File file,
-    {Map<String, String>? fields}) async {
+    String fileName, {Map<String, String>? fields}) async {
   final client = http.Client();
   try {
     final uri = Uri.parse('http://localhost:4000$path');
     final request = http.MultipartRequest('POST', uri)
-      ..files.add(await http.MultipartFile.fromPath(fieldName, file.path))
+      ..files.add(await http.MultipartFile.fromPath(fieldName, file.path,
+          filename: fileName))
       ..fields.addAll(fields ?? {});
     final res = await request.send().timeout(const Duration(seconds: 60));
     if (res.statusCode >= 400) {
@@ -193,7 +194,7 @@ Future<Map<String, dynamic>> apiUploadBytes(String path, String fieldName,
   }
 }
 
-Future<bool> ensureStoragePermission() async {
+Future<bool> ensureStoragePermission(BuildContext context) async {
   final status = await Permission.storage.status;
   if (!status.isGranted) {
     final result = await Permission.storage.request();
@@ -330,11 +331,11 @@ Future<Map<String, dynamic>> apiUploadTemplateBytes(String path,
   return apiUploadBytes(path, fieldName, bytes, fileName, fields: fields);
 }
 
-Future<Map<String, dynamic>> apiSetTemplateCurrent(String id) async {
+Future<Map<String, dynamic>> apiSetTemplateCurrent(dynamic id) async {
   return apiPost('/api/submission-kit/$id/set-current', body: {});
 }
 
-Future<Map<String, dynamic>> apiDownloadTemplate(String id, String destPath) async {
+Future<Map<String, dynamic>> apiDownloadTemplate(dynamic id, String destPath) async {
   return apiDownloadFile('/api/submission-kit/$id/download', destPath);
 }
 
@@ -442,3 +443,39 @@ Future<Map<String, dynamic>> apiDeletePlannerTask(String taskId) async {
 Future<Map<String, dynamic>> apiMyGrowth() async {
   return apiGet('/api/growth/my');
 }
+
+// ============================================================================
+// Batches API
+// ============================================================================
+Future<Map<String, dynamic>> apiCreateBatch(Map<String, dynamic> body) async {
+  return apiPost('/api/batches', body: body);
+}
+
+// ============================================================================
+// Student Notes API (cached)
+// ============================================================================
+Future<Map<String, dynamic>> apiNotesBySubjectCached(String subjectId) async {
+  return apiGet('/api/notes?subject_id=$subjectId');
+}
+
+// ============================================================================
+// Student Assignment submission API
+// ============================================================================
+Future<Map<String, dynamic>> apiSubmitAssignmentBytes(String assignmentId,
+    List<int> bytes, String fileName,
+    {String? mimeType}) async {
+  return apiUploadBytes('/api/assignments/$assignmentId/submission', 'file',
+      bytes, fileName, fields: {'mime_type': mimeType ?? 'application/pdf'});
+}
+
+// ============================================================================
+// Submission Kit API (extended)
+// ============================================================================
+Future<Map<String, dynamic>> apiUploadTemplate(Map<String, dynamic> body,
+    File file, String fileName,
+    {String? mimeType}) async {
+  return apiUploadBytes('/api/submission-kit', 'file',
+      await file.readAsBytes(), fileName,
+      fields: {...body, if (mimeType != null) 'mime_type': mimeType});
+}
+

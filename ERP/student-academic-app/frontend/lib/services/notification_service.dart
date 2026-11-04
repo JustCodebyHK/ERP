@@ -1,5 +1,4 @@
 ﻿import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter/material.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -25,10 +24,6 @@ class NotificationService {
   }
 
   static Future<void> requestPermission() async {
-    // Permission granted by default on Android
-  }
-
-  static Future<void> requestPermissionWithHelp(BuildContext context) async {
     // Permission granted by default on Android
   }
 
@@ -81,16 +76,7 @@ class NotificationService {
       priority: Priority.high,
     );
     const details = NotificationDetails(android: android);
-    if (scheduledAt != null) {
-      await _plugin.zonedSchedule(
-        id, title, body, scheduledAt, details,
-        androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-      );
-    } else {
-      await _plugin.show(id, title, body, details);
-    }
+    await _plugin.show(id, title, body, details);
   }
 
   Future<void> showInfoNotification({

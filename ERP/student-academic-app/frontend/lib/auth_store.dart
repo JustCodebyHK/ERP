@@ -8,8 +8,8 @@ class AuthStore {
   AuthStore._internal();
 
   final _storage = const FlutterSecureStorage();
-  Map<String, dynamic>? _userCache;
-  bool? _isLoggedInCache;
+  static Map<String, dynamic>? _userCache;
+  static bool? _isLoggedInCache;
 
   static const _tokenKey = 'auth_token';
   static const _refreshKey = 'refresh_token';
@@ -67,19 +67,14 @@ class AuthStore {
     }
   }
 
-  Map<String, dynamic>? get user => _userCache;
+  static Map<String, dynamic>? get user => _userCache;
 
-  static bool get isLoggedIn => _instance._isLoggedInCache ?? false;
-
-  Future<bool> get _isLoggedIn async {
-    final token = await getToken();
-    return token != null && token.isNotEmpty;
-  }
+  static bool get isLoggedIn => _isLoggedInCache ?? false;
 
   static Future<void> clear() async {
+    _userCache = null;
+    _isLoggedInCache = false;
     final store = _instance;
-    store._userCache = null;
-    store._isLoggedInCache = false;
     await store._storage.delete(key: _tokenKey);
     await store._storage.delete(key: _refreshKey);
     await store._storage.delete(key: _userKey);

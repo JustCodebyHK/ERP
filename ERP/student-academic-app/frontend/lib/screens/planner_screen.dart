@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 
 import '../api.dart';
 import '../models/planner.dart';
+import '../models/planner_task.dart';
+import '../models/daily_digest.dart';
 import '../widgets/app_theme.dart';
 
 class StatCard extends StatelessWidget {
