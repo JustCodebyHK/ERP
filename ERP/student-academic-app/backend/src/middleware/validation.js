@@ -335,6 +335,12 @@ function isGithubUsername(value) {  if (!/^[a-zA-Z0-9-]{1,39}$/.test(value)) { r
 
 function isLinkedInUrl(value) {  if (!/^https:\/\/www\.linkedin\.com\//.test(value)) { return { valid: false, error: 'Invalid linkedin url' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody };
 
 
+
+
+function isFileSizeRange(value) {
+  const n = Number(value); if (!Number.isInteger(n) || n < 1 || n > 100) { return { valid: false, error: 'File size must be 1-100 MB' }; } return { valid: true };
+}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange };
