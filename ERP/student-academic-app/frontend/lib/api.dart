@@ -30,23 +30,23 @@ class ApiClient {
     return headers;
   }
 
-  Future<http.Response> get(String path, {Map<String, String>? extraHeaders}) async {
+  Future<http.Response> get(String path, {Map<String, String>? headers}) async {
     final uri = Uri.parse('$baseUrl$path');
-    final allHeaders = {...?extraHeaders, ..._authHeaders()};
+    final allHeaders = {...?headers, ..._authHeaders()};
     return client.get(uri, headers: allHeaders).timeout(timeout);
   }
 
-  Future<http.Response> post(String path, {Map<String, dynamic>? body, Map<String, String>? extraHeaders}) async {
+  Future<http.Response> post(String path, {Map<String, dynamic>? body}) async {
     final uri = Uri.parse('$baseUrl$path');
-    final allHeaders = {'Content-Type': 'application/json', ...?extraHeaders, ..._authHeaders()};
+    final allHeaders = {'Content-Type': 'application/json', ...?headers, ..._authHeaders()};
     return client.post(uri,
         headers: allHeaders,
         body: body != null ? jsonEncode(body) : null).timeout(timeout);
   }
 
-  Future<http.Response> put(String path, {Map<String, dynamic>? body, Map<String, String>? extraHeaders}) async {
+  Future<http.Response> put(String path, {Map<String, dynamic>? body}) async {
     final uri = Uri.parse('$baseUrl$path');
-    final allHeaders = {'Content-Type': 'application/json', ...?extraHeaders, ..._authHeaders()};
+    final allHeaders = {'Content-Type': 'application/json', ...?headers, ..._authHeaders()};
     return client.put(uri,
         headers: allHeaders,
         body: body != null ? jsonEncode(body) : null).timeout(timeout);
@@ -127,7 +127,7 @@ Future<Map<String, dynamic>> apiDelete(String path) async {
   }
 }
 
-Future<Map<String, dynamic>> apiPost(String path, [Map<String, dynamic>? body]) async {
+Future<Map<String, dynamic>> apiPost(String path, {Map<String, dynamic>? body}) async {
   final client = http.Client();
   try {
     final uri = Uri.parse('http://localhost:4000$path');
