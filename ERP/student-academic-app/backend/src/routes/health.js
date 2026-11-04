@@ -90,4 +90,16 @@ router.get('/summary', async (req, res) => {
   }
 });
 
+router.get('/ready', async (req, res) => {
+  if (!db.isConfigured()) {
+    return res.status(503).json({ ready: false, reason: 'database not configured' });
+  }
+  try {
+    await db.query('SELECT 1 AS ok');
+    res.json({ ready: true });
+  } catch {
+    res.status(503).json({ ready: false, reason: 'database query failed' });
+  }
+});
+
 module.exports = router;
