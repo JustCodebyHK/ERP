@@ -349,4 +349,10 @@ function isContentType(value) {
   const allowed = ['application/pdf','image/jpeg','image/png','text/plain','application/msword']; if (!allowed.includes(value)) { return { valid: false, error: 'Unsupported content type' }; } return { valid: true };
 }
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType };
+
+
+function isRoleCombination(value) {
+  const allowed = ['student','teacher','parent','admin']; if (!allowed.includes(value)) { return { valid: false, error: 'Invalid role combination' }; } return { valid: true };
+}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination };
