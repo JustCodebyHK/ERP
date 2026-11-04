@@ -81,6 +81,8 @@ router.get('/summary', async (req, res) => {
       cpu: { count: cpus.length, load_average: os.loadavg() },
       environment: process.env.NODE_ENV || 'development',
       version: pkg.version,
+      node_version: process.version,
+      platform: process.platform,
       timestamp: new Date().toISOString()
     });
   } catch (err) {
