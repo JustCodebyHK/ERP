@@ -2,24 +2,14 @@
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class AuthUser {
-  final Map<String, dynamic> _data;
-  AuthUser(this._data);
-  dynamic operator [](String key) => _data[key];
-  String? get role => _data['role'] as String?;
-  String? get name => _data['name'] as String?;
-  String? get id => _data['id'] as String?;
-  String? get email => _data['email'] as String?;
-}
-
 class AuthStore {
   static final AuthStore _instance = AuthStore._internal();
   factory AuthStore() => _instance;
   AuthStore._internal();
 
   final _storage = const FlutterSecureStorage();
-  AuthUser? _user;
-  static bool? _isLoggedInCache;
+  Map<String, dynamic>? _user;
+  bool? _isLoggedInCache;
 
   static const _tokenKey = 'auth_token';
   static const _refreshKey = 'refresh_token';
@@ -45,7 +35,7 @@ class AuthStore {
   Future<String?> getRefreshToken() async => _storage.read(key: _refreshKey);
 
   Future<void> saveUser(Map<String, dynamic> user) async {
-    _user = AuthUser(user);
+    _user = user;
     await _storage.write(key: _userKey, value: jsonEncode(user));
     _isLoggedInCache = true;
   }
@@ -66,19 +56,19 @@ class AuthStore {
   }
 
   Future<Map<String, dynamic>?> getUser() async {
-    if (_user != null) return _user!._data;
+    if (_user != null) return _user;
     final raw = await _storage.read(key: _userKey);
     if (raw == null) return null;
     try {
       final data = jsonDecode(raw) as Map<String, dynamic>;
-      _user = AuthUser(data);
+      _user = data;
       return data;
     } catch (_) {
       return null;
     }
   }
 
-  static AuthUser? get user => _instance._user;
+  static Map<String, dynamic>? get user => _instance._user;
 
   static bool get isLoggedIn => _isLoggedInCache ?? false;
 
