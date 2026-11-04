@@ -34,13 +34,12 @@ class _StudentSubmissionKitScreenState
   Future<void> _downloadAndShare(SubmissionTemplate t) async {
     try {
       final perm = await ensureStoragePermission(context);
-      if (!perm.granted) {
+      if (!perm) {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(perm.needsSettings
-                ? 'File access is still off. Turn on "Allow management of all files" in settings, then try again.'
-                : 'File access permission is required to download files'),
+            content: const Text(
+                'File access permission is required to download files'),
           ),
         );
         return;
@@ -48,7 +47,7 @@ class _StudentSubmissionKitScreenState
 
       final kitDir = await resolveDownloadDirectory('SubmissionKit');
       final dest =
-          '${kitDir.path}${Platform.pathSeparator}${t.originalName}';
+          '${kitDir}${Platform.pathSeparator}${t.originalName}';
 
       await apiDownloadTemplate(t.id, dest);
 
