@@ -27,6 +27,13 @@ class AuthStore {
     await _storage.write(key: _userKey, value: user.toString());
   }
 
+  Future<void> updateUser(Map<String, dynamic> updates) async {
+    final current = await getUser();
+    if (current == null) return;
+    final merged = {...current, ...updates};
+    await saveUser(merged);
+  }
+
   Future<Map<String, dynamic>?> getUser() async {
     final raw = await _storage.read(key: _userKey);
     if (raw == null) return null;
