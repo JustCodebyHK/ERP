@@ -445,4 +445,10 @@ function isExportFormat(value) {
   if (!['csv','json','pdf','xlsx'].includes(value)) { return { valid: false, error: 'Invalid export format' }; } return { valid: true };
 }
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear, isEnrollmentStatus, isMarksRange, isAttendancePercentage, isTimetableSlot, isPlannerEventType, isGrowthMetric, isAnnouncementTarget, isParentChildRelation, isGroupChatMessageLength, isSubmissionTemplateType, isFileUploadBatch, isBulkOperation, isExportFormat };
+
+
+function isImportFormat(value) {
+  if (!['csv','json'].includes(value)) { return { valid: false, error: 'Invalid import format' }; } return { valid: true };
+}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear, isEnrollmentStatus, isMarksRange, isAttendancePercentage, isTimetableSlot, isPlannerEventType, isGrowthMetric, isAnnouncementTarget, isParentChildRelation, isGroupChatMessageLength, isSubmissionTemplateType, isFileUploadBatch, isBulkOperation, isExportFormat, isImportFormat };
