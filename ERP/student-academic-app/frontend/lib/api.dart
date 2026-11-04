@@ -138,7 +138,8 @@ Future<Map<String, dynamic>> apiDelete(String path) async {
   }
 }
 
-Future<Map<String, dynamic>> apiPost(String path, {Map<String, dynamic>? body}) async {
+Future<Map<String, dynamic>> apiPost(String path,
+    [Map<String, dynamic>? body]) async {
   final client = http.Client();
   try {
     final uri = Uri.parse('http://localhost:4000$path');
@@ -271,7 +272,7 @@ Future<Map<String, dynamic>> apiCreateTimetableEntry(Map<String, dynamic> body) 
   return apiPost('/api/timetable', body: body);
 }
 
-Future<Map<String, dynamic>> apiUpdateTimetableEntry(String id, Map<String, dynamic> body) async {
+Future<Map<String, dynamic>> apiUpdateTimetableEntry(dynamic id, Map<String, dynamic> body) async {
   return apiPost('/api/timetable/$id', body: body);
 }
 
@@ -304,7 +305,7 @@ Future<Map<String, dynamic>> apiCreateAnnouncement(Map<String, dynamic> body) as
   return apiPost('/api/announcements', body: body);
 }
 
-Future<Map<String, dynamic>> apiDeleteAnnouncement(String id) async {
+Future<Map<String, dynamic>> apiDeleteAnnouncement(dynamic id) async {
   return apiDelete('/api/announcements/$id');
 }
 
@@ -317,12 +318,6 @@ Future<Map<String, dynamic>> apiListTemplates() async {
 
 Future<Map<String, dynamic>> apiListTemplatesCached() async {
   return apiGet('/api/submission-kit');
-}
-
-Future<Map<String, dynamic>> apiUploadTemplate(Map<String, dynamic> body,
-    File file, String fileName) async {
-  return apiUploadBytes('/api/submission-kit', 'file',
-      await file.readAsBytes(), fileName, fields: body);
 }
 
 Future<Map<String, dynamic>> apiUploadTemplateBytes(String path,
