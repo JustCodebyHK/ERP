@@ -63,7 +63,7 @@ class DailyDigest {
       overdueAssignments: (json['overdue_assignments'] as List?)
           ?.map((e) => PlannerTask.fromJson(e as Map<String, dynamic>))
           .toList() ?? [],
-      classes: json['classes'] as List?,
+      classes: (json['classes'] as List?) ?? <dynamic>[],
     );
   }
 
