@@ -469,4 +469,10 @@ function isNotificationType(value) {
   if (!['info','warning','error','success','reminder'].includes(value)) { return { valid: false, error: 'Invalid notification type' }; } return { valid: true };
 }
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear, isEnrollmentStatus, isMarksRange, isAttendancePercentage, isTimetableSlot, isPlannerEventType, isGrowthMetric, isAnnouncementTarget, isParentChildRelation, isGroupChatMessageLength, isSubmissionTemplateType, isFileUploadBatch, isBulkOperation, isExportFormat, isImportFormat, isReportType, isDashboardWidget, isNotificationType };
+
+
+function isAuditAction(value) {
+  if (!['create','read','update','delete','login','logout'].includes(value)) { return { valid: false, error: 'Invalid audit action' }; } return { valid: true };
+}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear, isEnrollmentStatus, isMarksRange, isAttendancePercentage, isTimetableSlot, isPlannerEventType, isGrowthMetric, isAnnouncementTarget, isParentChildRelation, isGroupChatMessageLength, isSubmissionTemplateType, isFileUploadBatch, isBulkOperation, isExportFormat, isImportFormat, isReportType, isDashboardWidget, isNotificationType, isAuditAction };
