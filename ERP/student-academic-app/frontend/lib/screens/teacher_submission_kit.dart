@@ -112,13 +112,14 @@ FilledButton(
                           );
                         } else if (pickedFile!.bytes != null) {
                           await apiUploadTemplateBytes(
-                            {
+                            '/api/submission-kit',
+                            'file',
+                            pickedFile!.bytes!,
+                            pickedName!,
+                            fields: {
                               'type': type,
                               'title': titleCtrl.text.trim(),
                             },
-                            pickedFile!.bytes!,
-                            pickedName!,
-                            mimeType: mimeType,
                           );
                         } else {
                           throw Exception('Unable to read file');
