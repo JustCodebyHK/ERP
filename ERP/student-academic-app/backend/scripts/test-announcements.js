@@ -5,9 +5,9 @@ const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 async function testAnnouncements(limit = 10) {
   const client = await pool.connect();
   try {
-    const result = await client.query('SELECT * FROM announcements ORDER BY created_at DESC LIMIT ', [limit]);
-    console.log(\Found \ announcements:\);
-    result.rows.forEach(row => console.log(\  [\] \\));
+    const result = await client.query('SELECT * FROM announcements ORDER BY created_at DESC LIMIT $1', [limit]);
+    console.log(`Found ${result.rows.length} announcements:`);
+    result.rows.forEach(row => console.log(`  [${row.id}] ${row.title}`));
   } finally {
     client.release();
   }

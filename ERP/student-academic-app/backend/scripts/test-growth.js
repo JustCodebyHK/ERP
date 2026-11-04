@@ -8,12 +8,12 @@ async function testGrowth(studentId = null) {
     let query = 'SELECT * FROM growth_records';
     const params = [];
     if (studentId) {
-      query += ' WHERE student_id = ';
+      query += ' WHERE student_id = $1';
       params.push(studentId);
     }
     query += ' ORDER BY recorded_at DESC';
     const result = await client.query(query, params);
-    console.log(\Found \ growth records\);
+    console.log(`Found ${result.rows.length} growth records`);
   } finally {
     client.release();
   }

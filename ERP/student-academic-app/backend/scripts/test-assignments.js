@@ -8,12 +8,12 @@ async function testAssignments(status = null) {
     let query = 'SELECT * FROM assignments';
     const params = [];
     if (status) {
-      query += ' WHERE status = ';
+      query += ' WHERE status = $1';
       params.push(status);
     }
     query += ' ORDER BY created_at DESC';
     const result = await client.query(query, params);
-    console.log(\Found \ assignments\);
+    console.log(`Found ${result.rows.length} assignments`);
   } finally {
     client.release();
   }

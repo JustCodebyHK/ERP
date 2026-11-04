@@ -10,18 +10,18 @@ async function runMigrations(dryRun = false) {
   const files = fs.readdirSync(migrationDir).sort();
   const client = await pool.connect();
   try {
-    await client.query(\CREATE TABLE IF NOT EXISTS schema_migrations (version VARCHAR(50) PRIMARY KEY)\);
+    await client.query(`CREATE TABLE IF NOT EXISTS schema_migrations (version VARCHAR(50) PRIMARY KEY)`);
     const applied = await client.query('SELECT version FROM schema_migrations');
     const appliedSet = new Set(applied.rows.map(r => r.version));
     for (const file of files) {
       if (appliedSet.has(file)) continue;
       const sql = fs.readFileSync(path.join(migrationDir, file), 'utf8');
       if (dryRun) {
-        console.log(\[DRY-RUN] Would run: \\);
+        console.log(`[DRY-RUN] Would run: ${file}`);
       } else {
         await client.query(sql);
-        await client.query('INSERT INTO schema_migrations (version) VALUES ()', [file]);
-        console.log(\Applied: \\);
+        await client.query('INSERT INTO schema_migrations (version) VALUES ($1)', [file]);
+        console.log(`Applied: ${file}`);
       }
     }
     console.log('Migrations complete.');
@@ -33,14 +33,14 @@ async function runMigrations(dryRun = false) {
 async function showStatus() {
   const client = await pool.connect();
   try {
-    await client.query(\CREATE TABLE IF NOT EXISTS schema_migrations (version VARCHAR(50) PRIMARY KEY)\);
+    await client.query(`CREATE TABLE IF NOT EXISTS schema_migrations (version VARCHAR(50) PRIMARY KEY)`);
     const applied = await client.query('SELECT version FROM schema_migrations');
     const appliedSet = new Set(applied.rows.map(r => r.version));
     const files = fs.readdirSync(migrationDir).sort();
     console.log('Migration status:');
     for (const file of files) {
       const status = appliedSet.has(file) ? 'applied' : 'pending';
-      console.log(\  [\] \\);
+      console.log(`  [${status}] ${file}`);
     }
   } finally {
     client.release();

@@ -8,12 +8,12 @@ async function testNotes(subjectId = null) {
     let query = 'SELECT * FROM notes';
     const params = [];
     if (subjectId) {
-      query += ' WHERE subject_id = ';
+      query += ' WHERE subject_id = $1';
       params.push(subjectId);
     }
     query += ' ORDER BY created_at DESC';
     const result = await client.query(query, params);
-    console.log(\Found \ notes\);
+    console.log(`Found ${result.rows.length} notes`);
   } finally {
     client.release();
   }

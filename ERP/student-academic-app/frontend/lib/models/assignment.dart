@@ -69,5 +69,5 @@
   }
 
   @override
-  String toString() => 'Assignment(id: , title: , status: )';
+  String toString() => 'Assignment(id: $id, title: $title, status: $status)';
 }

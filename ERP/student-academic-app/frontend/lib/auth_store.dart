@@ -30,7 +30,7 @@ class AuthStore {
   Future<void> updateUser(Map<String, dynamic> updates) async {
     final current = await getUser();
     if (current == null) return;
-    final merged = {...current, ...updates};
+    final merged = {...?current, ...updates};
     await saveUser(merged);
   }
 

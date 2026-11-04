@@ -6,11 +6,11 @@ async function testParent(includeChildren = false) {
   const client = await pool.connect();
   try {
     const result = await client.query('SELECT * FROM parents');
-    console.log(\Found \ parents\);
+    console.log(`Found ${result.rows.length} parents`);
     if (includeChildren) {
       for (const parent of result.rows) {
-        const kids = await client.query('SELECT * FROM children WHERE parent_id = ', [parent.id]);
-        console.log(\  Parent \: \ children\);
+        const kids = await client.query('SELECT * FROM children WHERE parent_id = $1', [parent.id]);
+        console.log(`  Parent ${parent.id}: ${kids.rows.length} children`);
       }
     }
   } finally {

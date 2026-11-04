@@ -8,13 +8,13 @@ async function testGroups(minMembers = null) {
     let query = 'SELECT g.*, COUNT(m.user_id) AS member_count FROM groups g LEFT JOIN group_members m ON m.group_id = g.id GROUP BY g.id';
     const params = [];
     if (minMembers !== null) {
-      query += ' HAVING COUNT(m.user_id) >= ';
+      query += ' HAVING COUNT(m.user_id) >= $1';
       params.push(minMembers);
     }
     query += ' ORDER BY member_count DESC';
     const result = await client.query(query, params);
-    console.log(\Found \ groups\);
-    result.rows.forEach(row => console.log(\  [\] \ (\ members)\));
+    console.log(`Found ${result.rows.length} groups`);
+    result.rows.forEach(row => console.log(`  [${row.id}] ${row.name} (${row.member_count} members)`));
   } finally {
     client.release();
   }
