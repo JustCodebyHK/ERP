@@ -4,6 +4,8 @@ const rateLimitMap = new Map();
 const RATE_LIMIT_WINDOW = 60000;
 const RATE_LIMIT_MAX = 10;
 
+const blacklistedTokens = new Set();
+
 function rateLimiter(req, res, next) {
   const ip = req.ip || req.connection.remoteAddress || 'unknown';
   const now = Date.now();
@@ -19,11 +21,22 @@ function rateLimiter(req, res, next) {
   next();
 }
 
+function blacklistToken(token) {
+  blacklistedTokens.add(token);
+}
+
+function isBlacklisted(token) {
+  return blacklistedTokens.has(token);
+}
+
 function authRequired(req, res, next) {
   const header = req.headers.authorization || '';
   const token = header.startsWith('Bearer ') ? header.slice(7) : null;
   if (!token) {
     return res.status(401).json({ error: 'Missing bearer token' });
+  }
+  if (isBlacklisted(token)) {
+    return res.status(401).json({ error: 'Token has been revoked' });
   }
   try {
     req.user = jwt.verify(token, process.env.JWT_SECRET);
@@ -42,4 +55,4 @@ function requireRole(...roles) {
   };
 }
 
-module.exports = { authRequired, requireRole, rateLimiter };
+module.exports = { authRequired, requireRole, rateLimiter, blacklistToken, isBlacklisted };
