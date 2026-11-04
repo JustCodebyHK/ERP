@@ -1,4 +1,23 @@
-const jwt = require('jsonwebtoken');
+﻿const jwt = require('jsonwebtoken');
+
+const rateLimitMap = new Map();
+const RATE_LIMIT_WINDOW = 60000;
+const RATE_LIMIT_MAX = 10;
+
+function rateLimiter(req, res, next) {
+  const ip = req.ip || req.connection.remoteAddress || 'unknown';
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now - entry.windowStart > RATE_LIMIT_WINDOW) {
+    rateLimitMap.set(ip, { count: 1, windowStart: now });
+    return next();
+  }
+  if (entry.count >= RATE_LIMIT_MAX) {
+    return res.status(429).json({ error: 'Too many requests. Try again later.' });
+  }
+  entry.count += 1;
+  next();
+}
 
 function authRequired(req, res, next) {
   const header = req.headers.authorization || '';
@@ -23,4 +42,4 @@ function requireRole(...roles) {
   };
 }
 
-module.exports = { authRequired, requireRole };
+module.exports = { authRequired, requireRole, rateLimiter };
