@@ -40,5 +40,11 @@ class CacheService {
     await _prefs?.clear();
   }
 
+  Future<bool> containsKey(String key) async =>
+      _prefs?.containsKey(key) ?? false;
+
+  Future<List<String>> getKeys() async =>
+      _prefs?.getKeys().toList() ?? [];
+
   bool get isInitialized => _prefs != null;
 }
