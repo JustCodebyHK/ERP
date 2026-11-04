@@ -5,6 +5,7 @@
   final String createdBy;
   final DateTime createdAt;
   final bool isRead;
+  final String priority;
 
   Announcement({
     required this.id,
@@ -13,6 +14,7 @@
     required this.createdBy,
     required this.createdAt,
     this.isRead = false,
+    this.priority = 'normal',
   });
 
   factory Announcement.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@
       createdBy: json['created_by'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
       isRead: json['is_read'] as bool? ?? false,
+      priority: json['priority'] as String? ?? 'normal',
     );
   }
 
@@ -34,10 +37,13 @@
       'created_by': createdBy,
       'created_at': createdAt.toIso8601String(),
       'is_read': isRead,
+      'priority': priority,
     };
   }
 
-  Announcement copyWith({bool? isRead}) {
+  bool get isHighPriority => priority == 'high';
+
+  Announcement copyWith({bool? isRead, String? priority}) {
     return Announcement(
       id: id,
       title: title,
@@ -45,9 +51,10 @@
       createdBy: createdBy,
       createdAt: createdAt,
       isRead: isRead ?? this.isRead,
+      priority: priority ?? this.priority,
     );
   }
 
   @override
-  String toString() => 'Announcement(id: , title: , isRead: )';
+  String toString() => 'Announcement(id: , title: , priority: )';
 }
