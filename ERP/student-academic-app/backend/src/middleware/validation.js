@@ -415,4 +415,10 @@ function isParentChildRelation(value) {
   if (!['father','mother','guardian'].includes(value)) { return { valid: false, error: 'Invalid parent-child relation' }; } return { valid: true };
 }
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear, isEnrollmentStatus, isMarksRange, isAttendancePercentage, isTimetableSlot, isPlannerEventType, isGrowthMetric, isAnnouncementTarget, isParentChildRelation };
+
+
+function isGroupChatMessageLength(value) {
+  if (typeof value !== 'string' || value.length < 1 || value.length > 1000) { return { valid: false, error: 'Message must be 1-1000 characters' }; } return { valid: true };
+}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear, isEnrollmentStatus, isMarksRange, isAttendancePercentage, isTimetableSlot, isPlannerEventType, isGrowthMetric, isAnnouncementTarget, isParentChildRelation, isGroupChatMessageLength };
