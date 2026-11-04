@@ -38,7 +38,7 @@ class ApiClient {
 
   Future<http.Response> post(String path, {Map<String, dynamic>? body}) async {
     final uri = Uri.parse('$baseUrl$path');
-    final allHeaders = {'Content-Type': 'application/json', ...?headers, ..._authHeaders()};
+    final allHeaders = {'Content-Type': 'application/json', ..._authHeaders()};
     return client.post(uri,
         headers: allHeaders,
         body: body != null ? jsonEncode(body) : null).timeout(timeout);
@@ -46,7 +46,7 @@ class ApiClient {
 
   Future<http.Response> put(String path, {Map<String, dynamic>? body}) async {
     final uri = Uri.parse('$baseUrl$path');
-    final allHeaders = {'Content-Type': 'application/json', ...?headers, ..._authHeaders()};
+    final allHeaders = {'Content-Type': 'application/json', ..._authHeaders()};
     return client.put(uri,
         headers: allHeaders,
         body: body != null ? jsonEncode(body) : null).timeout(timeout);
@@ -130,7 +130,7 @@ Future<Map<String, dynamic>> apiDelete(String path) async {
 Future<Map<String, dynamic>> apiPost(String path, {Map<String, dynamic>? body}) async {
   final client = http.Client();
   try {
-    final uri = Uri.parse('http://localhost:4000$path');
+    final uri = Uri.parse('$baseUrl$path');
     final res = await client.post(uri,
         headers: {'Content-Type': 'application/json'},
         body: body != null ? jsonEncode(body) : null).timeout(const Duration(seconds: 30));
