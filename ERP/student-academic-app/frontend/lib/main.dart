@@ -46,7 +46,6 @@ class ThemeNotifier extends ChangeNotifier {
   }
 }
 
-// Global theme notifier instance
 final themeNotifier = ThemeNotifier();
 
 Future<void> main() async {
@@ -83,7 +82,7 @@ class StudentAcademicApp extends StatelessWidget {
           darkTheme: AppTheme.dark(),
           themeMode: themeNotifier.themeMode,
           home: AuthStore.isLoggedIn
-              ? homeForRole(AuthStore.user!.role)
+              ? homeForRole(AuthStore.user?.role ?? '')
               : const LoginScreen(),
         );
       },
