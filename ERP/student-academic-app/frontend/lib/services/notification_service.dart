@@ -28,7 +28,7 @@ class NotificationService {
     return;
   }
 
-  static Future<void> requestPermissionWithHelp() async {
+  static Future<void> requestPermissionWithHelp(BuildContext context) async {
     return;
   }
 
