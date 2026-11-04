@@ -59,10 +59,10 @@ class NotificationService {
     );
     const details = NotificationDetails(android: android);
     await _plugin.show(
-      id: 0,
-      title: 'New message in $groupName',
-      body: '$senderName: $message',
-      details: details,
+      0,
+      'New message in $groupName',
+      '$senderName: $message',
+      details,
     );
   }
 
