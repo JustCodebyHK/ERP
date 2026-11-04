@@ -397,4 +397,10 @@ function isPlannerEventType(value) {
   if (!['assignment','exam','reminder','event','holiday'].includes(value)) { return { valid: false, error: 'Invalid planner event type' }; } return { valid: true };
 }
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear, isEnrollmentStatus, isMarksRange, isAttendancePercentage, isTimetableSlot, isPlannerEventType };
+
+
+function isGrowthMetric(value) {
+  if (!['attendance','grades','participation','improvement'].includes(value)) { return { valid: false, error: 'Invalid growth metric' }; } return { valid: true };
+}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear, isEnrollmentStatus, isMarksRange, isAttendancePercentage, isTimetableSlot, isPlannerEventType, isGrowthMetric };
