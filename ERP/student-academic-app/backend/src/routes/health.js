@@ -16,4 +16,9 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.get('/uptime', (req, res) => {
+  const uptimeSeconds = Math.floor((Date.now() - startTime) / 1000);
+  res.json({ uptime_seconds: uptimeSeconds, started_at: new Date(startTime).toISOString() });
+});
+
 module.exports = router;
