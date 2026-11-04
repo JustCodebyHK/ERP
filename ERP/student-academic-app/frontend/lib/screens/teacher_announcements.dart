@@ -225,7 +225,7 @@ class _TeacherAnnouncementsScreenState
                     leading: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: a.color.withValues(alpha: 0.15),
+                        color: (a.color ?? Colors.blue).withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
@@ -279,7 +279,7 @@ class _TeacherAnnouncementsScreenState
                                 a.typeLabel,
                                 style: const TextStyle(fontSize: 10),
                               ),
-                              backgroundColor: a.color.withValues(alpha: 0.1),
+                              backgroundColor: (a.color ?? Colors.blue).withValues(alpha: 0.1),
                               labelStyle: TextStyle(color: a.color),
                               visualDensity: VisualDensity.compact,
                             ),
@@ -295,7 +295,7 @@ class _TeacherAnnouncementsScreenState
                     ),
                     trailing: PopupMenuButton<String>(
                       onSelected: (value) {
-                        if (value == 'delete') _deleteAnnouncement(a.id);
+                        if (value == 'delete') _deleteAnnouncement(a.id.toString());
                       },
                       itemBuilder: (_) => [
                         const PopupMenuItem(
