@@ -17,7 +17,7 @@ class NotificationService {
   Future<void> _init() async {
     const android = AndroidInitializationSettings('@mipmap/ic_launcher');
     const settings = InitializationSettings(android: android);
-    await _plugin.initialize(settings);
+    await _plugin.initialize(settings: settings);
   }
 
   static Future<bool> hasPermission() async {
@@ -59,10 +59,10 @@ class NotificationService {
     );
     const details = NotificationDetails(android: android);
     await _plugin.show(
-      0,
-      'New message in $groupName',
-      '$senderName: $message',
-      details,
+      id: 0,
+      title: 'New message in $groupName',
+      body: '$senderName: $message',
+      details: details,
     );
   }
 
@@ -81,7 +81,12 @@ class NotificationService {
       priority: Priority.high,
     );
     const details = NotificationDetails(android: android);
-    await _plugin.show(id, title, body, details);
+    await _plugin.show(
+      id: id,
+      title: title,
+      body: body,
+      details: details,
+    );
   }
 
   Future<void> showInfoNotification({
@@ -109,7 +114,7 @@ class NotificationService {
   }
 
   Future<void> cancel(int id) async {
-    await _plugin.cancel(id);
+    await _plugin.cancel(id: id);
   }
 
   Future<void> cancelAll() async {
