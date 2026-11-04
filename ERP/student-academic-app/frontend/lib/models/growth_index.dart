@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'component_detail.dart';
 
 class GrowthIndex {

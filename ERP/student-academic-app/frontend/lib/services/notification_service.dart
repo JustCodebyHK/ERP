@@ -24,7 +24,11 @@ class NotificationService {
   }
 
   static Future<void> requestPermission() async {
-    // Permission granted by default on Android
+    return;
+  }
+
+  static Future<void> requestPermissionWithHelp(BuildContext context) async {
+    return;
   }
 
   static Future<void> showGroupMessage({

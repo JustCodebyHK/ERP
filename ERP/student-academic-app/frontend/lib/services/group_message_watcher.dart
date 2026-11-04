@@ -26,7 +26,6 @@ class GroupMessageWatcher {
   void startWatching(String groupId) {
     stopWatching();
     _timer = Timer.periodic(_interval, (_) async {
-      // Simulate checking for new messages
       onNewMessage?.call(groupId);
     });
   }

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 class ComponentDetail {
   final String label;
-  final double score;
-  final double weight;
+  final int score;
+  final int weight;
   final String unit;
   final Map<String, dynamic>? details;
 
@@ -18,8 +18,8 @@ class ComponentDetail {
   factory ComponentDetail.fromJson(Map<String, dynamic> json) {
     return ComponentDetail(
       label: json['label'] as String,
-      score: (json['score'] as num).toDouble(),
-      weight: (json['weight'] as num).toDouble(),
+      score: (json['score'] as num).toInt(),
+      weight: (json['weight'] as num).toInt(),
       unit: json['unit'] as String,
       details: json['details'] as Map<String, dynamic>?,
     );

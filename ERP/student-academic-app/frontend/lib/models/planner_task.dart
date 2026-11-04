@@ -7,10 +7,13 @@ class PlannerTask {
   final String? description;
   final int priority;
   final DateTime dueAt;
+  final DateTime scheduledFor;
   final bool isCompleted;
   final bool hasTimetableLink;
   final DateTime? startTime;
   final DateTime? endTime;
+  final String? subjectCode;
+  final String? status;
 
   PlannerTask({
     required this.id,
@@ -19,10 +22,13 @@ class PlannerTask {
     this.description,
     required this.priority,
     required this.dueAt,
+    required this.scheduledFor,
     this.isCompleted = false,
     this.hasTimetableLink = false,
     this.startTime,
     this.endTime,
+    this.subjectCode,
+    this.status,
   });
 
   factory PlannerTask.fromJson(Map<String, dynamic> json) {
@@ -33,10 +39,13 @@ class PlannerTask {
       description: json['description'] as String?,
       priority: json['priority'] as int,
       dueAt: DateTime.parse(json['due_at'] as String),
+      scheduledFor: DateTime.parse(json['scheduled_for'] as String),
       isCompleted: json['is_completed'] as bool? ?? false,
       hasTimetableLink: json['has_timetable_link'] as bool? ?? false,
       startTime: json['start_time'] != null ? DateTime.parse(json['start_time'] as String) : null,
       endTime: json['end_time'] != null ? DateTime.parse(json['end_time'] as String) : null,
+      subjectCode: json['subject_code'] as String?,
+      status: json['status'] as String?,
     );
   }
 
@@ -48,10 +57,13 @@ class PlannerTask {
       'description': description,
       'priority': priority,
       'due_at': dueAt.toIso8601String(),
+      'scheduled_for': scheduledFor.toIso8601String(),
       'is_completed': isCompleted,
       'has_timetable_link': hasTimetableLink,
       'start_time': startTime?.toIso8601String(),
       'end_time': endTime?.toIso8601String(),
+      'subject_code': subjectCode,
+      'status': status,
     };
   }
 
@@ -75,6 +87,8 @@ class PlannerTask {
     }
   }
 
+  String get statusDisplay => status?.toUpperCase() ?? 'PENDING';
+
   PlannerTask copyWith({
     String? id,
     String? timetableEntryId,
@@ -82,10 +96,13 @@ class PlannerTask {
     String? description,
     int? priority,
     DateTime? dueAt,
+    DateTime? scheduledFor,
     bool? isCompleted,
     bool? hasTimetableLink,
     DateTime? startTime,
     DateTime? endTime,
+    String? subjectCode,
+    String? status,
   }) {
     return PlannerTask(
       id: id ?? this.id,
@@ -94,10 +111,13 @@ class PlannerTask {
       description: description ?? this.description,
       priority: priority ?? this.priority,
       dueAt: dueAt ?? this.dueAt,
+      scheduledFor: scheduledFor ?? this.scheduledFor,
       isCompleted: isCompleted ?? this.isCompleted,
       hasTimetableLink: hasTimetableLink ?? this.hasTimetableLink,
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
+      subjectCode: subjectCode ?? this.subjectCode,
+      status: status ?? this.status,
     );
   }
 
