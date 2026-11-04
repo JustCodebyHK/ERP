@@ -373,4 +373,10 @@ function isEnrollmentStatus(value) {
   if (!['enrolled','dropped','completed','pending'].includes(value)) { return { valid: false, error: 'Invalid enrollment status' }; } return { valid: true };
 }
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear, isEnrollmentStatus };
+
+
+function isMarksRange(value) {
+  const n = Number(value); if (!Number.isFinite(n) || n < 0 || n > 100) { return { valid: false, error: 'Marks must be 0-100' }; } return { valid: true };
+}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear, isEnrollmentStatus, isMarksRange };
