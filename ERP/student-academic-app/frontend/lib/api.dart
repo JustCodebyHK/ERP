@@ -123,7 +123,7 @@ Future<Map<String, dynamic>> apiDelete(String path) async {
   }
 }
 
-Future<Map<String, dynamic>> apiPost(String path, {Map<String, dynamic>? body}) async {
+Future<Map<String, dynamic>> apiPost(String path, [Map<String, dynamic>? body]) async {
   final client = http.Client();
   try {
     final uri = Uri.parse('http://localhost:4000$path');
@@ -138,7 +138,7 @@ Future<Map<String, dynamic>> apiPost(String path, {Map<String, dynamic>? body}) 
 }
 
 Future<void> apiUploadFile(String path, String fieldName, File file,
-    String fileName, {Map<String, String>? fields}) async {
+    String fileName, [Map<String, String>? fields]) async {
   final client = http.Client();
   try {
     final uri = Uri.parse('http://localhost:4000$path');
@@ -306,7 +306,7 @@ Future<Map<String, dynamic>> apiUploadTemplate(Map<String, dynamic> body,
 
 Future<Map<String, dynamic>> apiUploadTemplateBytes(String path,
     String fieldName, List<int> bytes, String fileName,
-    {Map<String, String>? fields}) async {
+    [Map<String, String>? fields]) async {
   return apiUploadBytes(path, fieldName, bytes, fileName, fields: fields);
 }
 
