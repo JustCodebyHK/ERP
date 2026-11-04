@@ -30,5 +30,27 @@ async function runMigrations(dryRun = false) {
   }
 }
 
-const dryRun = process.argv.includes('--dry-run');
-runMigrations(dryRun).catch(err => { console.error(err); process.exit(1); });
+async function showStatus() {
+  const client = await pool.connect();
+  try {
+    await client.query(\CREATE TABLE IF NOT EXISTS schema_migrations (version VARCHAR(50) PRIMARY KEY)\);
+    const applied = await client.query('SELECT version FROM schema_migrations');
+    const appliedSet = new Set(applied.rows.map(r => r.version));
+    const files = fs.readdirSync(migrationDir).sort();
+    console.log('Migration status:');
+    for (const file of files) {
+      const status = appliedSet.has(file) ? 'applied' : 'pending';
+      console.log(\  [\] \\);
+    }
+  } finally {
+    client.release();
+  }
+}
+
+const args = process.argv.slice(2);
+if (args.includes('--status') || args.includes('-s')) {
+  showStatus().catch(err => { console.error(err); process.exit(1); });
+} else {
+  const dryRun = args.includes('--dry-run');
+  runMigrations(dryRun).catch(err => { console.error(err); process.exit(1); });
+}
