@@ -52,21 +52,22 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     try {
       final data = _isLogin
-          ? await apiPost('/api/auth/login', {
+          ? await apiPost('/api/auth/login', body: {
               'email': _emailController.text.trim(),
               'password': _passwordController.text,
             })
-          : await apiPost('/api/auth/register', {
+          : await apiPost('/api/auth/register', body: {
               'name': _nameController.text.trim(),
               'email': _emailController.text.trim(),
               'password': _passwordController.text,
               'role': _role,
             });
       await AuthStore.saveSession(
-          data['token'] as String, data['user'] as Map<String, dynamic>);
+          data['user'] as Map<String, dynamic>,
+          token: data['token'] as String);
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => homeForRole(AuthStore.user!.role)),
+        MaterialPageRoute(builder: (_) => homeForRole(AuthStore.user!.role ?? 'student')),
       );
     } on ApiException catch (e) {
       setState(() => _error = e.message);
