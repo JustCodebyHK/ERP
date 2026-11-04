@@ -1,120 +1,65 @@
-import 'dart:io';
+﻿import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:permission_handler/permission_handler.dart';
-
-/// Wraps local notifications so the app can pop up a system notification
-/// when a new group chat message arrives.
 class NotificationService {
-  static final FlutterLocalNotificationsPlugin _plugin =
+  static final NotificationService _instance = NotificationService._internal();
+  factory NotificationService() => _instance;
+  NotificationService._internal();
+
+  final FlutterLocalNotificationsPlugin _plugin =
       FlutterLocalNotificationsPlugin();
-  static bool _initialized = false;
 
-  static Future<void> init() async {
-    if (_initialized) return;
-    const settings = InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-    );
-    try {
-      await _plugin.initialize(settings: settings);
-      _initialized = true;
-    } catch (e) {
-      debugPrint('NotificationService init failed: $e');
-    }
+  Future<void> initialize() async {
+    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const settings = InitializationSettings(android: android);
+    await _plugin.initialize(settings);
   }
 
-  /// Asks the user for permission to show notifications (Android 13+).
-  /// Returns true when notifications are allowed.
-  static Future<bool> requestPermission() async {
-    if (!Platform.isAndroid) return true;
-    await init();
-    try {
-      final android = _plugin.resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>();
-      final granted = await android?.requestNotificationsPermission();
-      if (granted == true) return true;
-      // Fallback for devices where the plugin cannot show the dialog.
-      final status = await Permission.notification.request();
-      return status.isGranted;
-    } catch (e) {
-      debugPrint('NotificationService requestPermission failed: $e');
-      return false;
-    }
-  }
-
-  /// Asks for the notification permission and, when it is not granted,
-  /// explains how to enable it from the system settings.
-  static Future<void> requestPermissionWithHelp(BuildContext context) async {
-    final granted = await requestPermission();
-    if (granted || !context.mounted) return;
-    final open = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Enable Notifications'),
-        content: const Text(
-            'To get pop-up alerts when a new group message arrives, allow '
-            'notifications for this app in the system settings.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Not now'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Open Settings'),
-          ),
-        ],
-      ),
-    );
-    if (open == true) {
-      await openAppSettings();
-    }
-  }
-
-  /// Whether notifications are currently allowed for this app.
-  static Future<bool> hasPermission() async {
-    if (!Platform.isAndroid) return true;
-    await init();
-    try {
-      final android = _plugin.resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>();
-      final enabled = await android?.areNotificationsEnabled();
-      if (enabled == false) return false;
-      return await Permission.notification.isGranted;
-    } catch (_) {
-      return false;
-    }
-  }
-
-  /// Shows a notification for a new group chat message.
-  static Future<void> showGroupMessage({
-    required String groupName,
-    required String senderName,
-    required String message,
+  Future<void> showNotification({
+    required int id,
+    required String title,
+    required String body,
+    String type = 'info',
   }) async {
-    await init();
-    final details = NotificationDetails(
-      android: AndroidNotificationDetails(
-        'group_messages',
-        'Group Messages',
-        channelDescription: 'Notifications for new group chat messages',
-        importance: Importance.high,
-        priority: Priority.high,
-        category: AndroidNotificationCategory.message,
-        styleInformation: BigTextStyleInformation(''),
-      ),
+    const android = AndroidNotificationDetails(
+      'channel_id',
+      'Channel',
+      channelDescription: 'App notifications',
+      importance: Importance.high,
+      priority: Priority.high,
     );
-    final id = DateTime.now().millisecondsSinceEpoch % 100000;
-    try {
-      await _plugin.show(
-        id: id,
-        title: '$senderName in $groupName',
-        body: message,
-        notificationDetails: details,
-      );
-    } catch (e) {
-      debugPrint('NotificationService show failed: $e');
-    }
+    const details = NotificationDetails(android: android);
+    await _plugin.show(id, title, body, details);
+  }
+
+  Future<void> showInfoNotification({
+    required int id,
+    required String title,
+    required String body,
+  }) async {
+    await showNotification(id: id, title: title, body: body, type: 'info');
+  }
+
+  Future<void> showWarningNotification({
+    required int id,
+    required String title,
+    required String body,
+  }) async {
+    await showNotification(id: id, title: title, body: body, type: 'warning');
+  }
+
+  Future<void> showErrorNotification({
+    required int id,
+    required String title,
+    required String body,
+  }) async {
+    await showNotification(id: id, title: title, body: body, type: 'error');
+  }
+
+  Future<void> cancel(int id) async {
+    await _plugin.cancel(id);
+  }
+
+  Future<void> cancelAll() async {
+    await _plugin.cancelAll();
   }
 }
