@@ -306,9 +306,11 @@ class _TeacherSubmissionsScreenState extends State<TeacherSubmissionsScreen> {
           FilledButton(
             onPressed: () async {
               final score = int.tryParse(scoreCtrl.text);
-              if (score == null || score < 0 || score > widget.assignment.maxScore) return;
+              if (score == null) return;
+              final maxScore = widget.assignment.maxScore;
+              if (score < 0 || (maxScore != null && score > maxScore)) return;
               try {
-                await apiGradeSubmission(widget.assignment.id, s.studentId, score);
+                await apiGradeSubmission(widget.assignment.id, s.studentId, score!);
                 if (!ctx.mounted) return;
                 Navigator.pop(ctx);
                 ScaffoldMessenger.of(ctx).showSnackBar(
