@@ -56,5 +56,5 @@
   }
 
   @override
-  String toString() => 'Announcement(id: , title: , priority: )';
+  String toString() => 'Announcement(id: $id, title: $title, priority: $priority)';
 }

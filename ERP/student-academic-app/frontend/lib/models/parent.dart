@@ -48,5 +48,5 @@
   int get childrenCount => childrenIds.length;
 
   @override
-  String toString() => 'Parent(id: , name: , children: )';
+  String toString() => 'Parent(id: $id, name: $name, children: $childrenCount)';
 }

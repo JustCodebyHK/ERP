@@ -51,5 +51,5 @@
   String get fileSizeMb => (fileSize / (1024 * 1024)).toStringAsFixed(2);
 
   @override
-  String toString() => 'SubmissionTemplate(id: , type: , version: )';
+  String toString() => 'SubmissionTemplate(id: $id, type: $type, version: $version)';
 }

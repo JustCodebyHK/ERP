@@ -49,5 +49,5 @@
   }
 
   @override
-  String toString() => 'GrowthRecord(id: , metric: , value:  )';
+  String toString() => 'GrowthRecord(id: $id, metric: $metricType, value: $value $unit)';
 }

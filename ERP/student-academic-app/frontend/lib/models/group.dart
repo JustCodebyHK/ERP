@@ -49,5 +49,5 @@
   }
 
   @override
-  String toString() => 'Group(id: , name: , members: )';
+  String toString() => 'Group(id: $id, name: $name, members: $memberCount)';
 }

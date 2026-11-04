@@ -49,5 +49,5 @@
   }
 
   @override
-  String toString() => 'TimetableEntry(id: , day: , -)';
+  String toString() => 'TimetableEntry(id: $id, day: $dayOfWeek, $startTime-$endTime)';
 }

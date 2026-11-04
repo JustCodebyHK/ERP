@@ -44,5 +44,5 @@
   }
 
   @override
-  String toString() => 'PlannerEvent(id: , title: , type: )';
+  String toString() => 'PlannerEvent(id: $id, title: $title, type: $eventType)';
 }
