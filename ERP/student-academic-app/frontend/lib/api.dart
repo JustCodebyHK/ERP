@@ -44,9 +44,10 @@ class ApiClient {
         body: body != null ? jsonEncode(body) : null).timeout(timeout);
   }
 
-  Future<http.Response> put(String path, {Map<String, dynamic>? body}) async {
+  Future<http.Response> put(String path,
+      {Map<String, dynamic>? body, Map<String, String>? headers}) async {
     final uri = Uri.parse('$baseUrl$path');
-    final allHeaders = {'Content-Type': 'application/json', ..._authHeaders()};
+    final allHeaders = {'Content-Type': 'application/json', ...?headers, ..._authHeaders()};
     return client.put(uri,
         headers: allHeaders,
         body: body != null ? jsonEncode(body) : null).timeout(timeout);
@@ -130,7 +131,7 @@ Future<Map<String, dynamic>> apiDelete(String path) async {
 Future<Map<String, dynamic>> apiPost(String path, {Map<String, dynamic>? body}) async {
   final client = http.Client();
   try {
-    final uri = Uri.parse('$baseUrl$path');
+    final uri = Uri.parse('http://localhost:4000$path');
     final res = await client.post(uri,
         headers: {'Content-Type': 'application/json'},
         body: body != null ? jsonEncode(body) : null).timeout(const Duration(seconds: 30));
@@ -310,7 +311,7 @@ Future<Map<String, dynamic>> apiUploadTemplate(Map<String, dynamic> body,
 
 Future<Map<String, dynamic>> apiUploadTemplateBytes(String path,
     String fieldName, List<int> bytes, String fileName,
-    [Map<String, String>? fields]) async {
+    {Map<String, String>? fields}) async {
   return apiUploadBytes(path, fieldName, bytes, fileName, fields: fields);
 }
 
