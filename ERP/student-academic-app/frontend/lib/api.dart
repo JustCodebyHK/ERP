@@ -127,7 +127,7 @@ Future<Map<String, dynamic>> apiDelete(String path) async {
   }
 }
 
-Future<Map<String, dynamic>> apiPost(String path, {Map<String, dynamic>? body}) async {
+Future<Map<String, dynamic>> apiPost(String path, [Map<String, dynamic>? body]) async {
   final client = http.Client();
   try {
     final uri = Uri.parse('$baseUrl$path');
