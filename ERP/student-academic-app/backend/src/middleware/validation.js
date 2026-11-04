@@ -391,4 +391,10 @@ function isTimetableSlot(value) {
   if (!/^(mon|tue|wed|thu|fri|sat|sun)-[0-9]{2}:[0-9]{2}$/.test(value)) { return { valid: false, error: 'Invalid timetable slot' }; } return { valid: true };
 }
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear, isEnrollmentStatus, isMarksRange, isAttendancePercentage, isTimetableSlot };
+
+
+function isPlannerEventType(value) {
+  if (!['assignment','exam','reminder','event','holiday'].includes(value)) { return { valid: false, error: 'Invalid planner event type' }; } return { valid: true };
+}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear, isEnrollmentStatus, isMarksRange, isAttendancePercentage, isTimetableSlot, isPlannerEventType };
