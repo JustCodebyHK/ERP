@@ -46,7 +46,7 @@ class ApiClient {
 
   Future<http.Response> put(String path, {Map<String, dynamic>? body}) async {
     final uri = Uri.parse('$baseUrl$path');
-    final allHeaders = {'Content-Type': 'application/json', ..._authHeaders()};
+    final allHeaders = {'Content-Type': 'application/json', ...?headers, ..._authHeaders()};
     return client.put(uri,
         headers: allHeaders,
         body: body != null ? jsonEncode(body) : null).timeout(timeout);
