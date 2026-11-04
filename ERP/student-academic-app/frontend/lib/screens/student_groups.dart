@@ -5,6 +5,8 @@ import '../widgets/app_theme.dart';
 import '../widgets/common_widgets.dart';
 import 'group_chat.dart';
 
+String friendlyErrorMessage(dynamic error) => 'Error: $error';
+
 class Group {
   final String id;
   final String name;
