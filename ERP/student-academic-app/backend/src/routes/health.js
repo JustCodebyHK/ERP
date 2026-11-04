@@ -21,4 +21,14 @@ router.get('/uptime', (req, res) => {
   res.json({ uptime_seconds: uptimeSeconds, started_at: new Date(startTime).toISOString() });
 });
 
+router.get('/memory', (req, res) => {
+  const mem = process.memoryUsage();
+  res.json({
+    rss: Math.round(mem.rss / 1024 / 1024),
+    heapTotal: Math.round(mem.heapTotal / 1024 / 1024),
+    heapUsed: Math.round(mem.heapUsed / 1024 / 1024),
+    external: Math.round(mem.external / 1024 / 1024)
+  });
+});
+
 module.exports = router;
