@@ -36,7 +36,7 @@ class ApiClient {
     return client.get(uri, headers: allHeaders).timeout(timeout);
   }
 
-  Future<http.Response> post(String path, {Map<String, dynamic>? body}) async {
+  Future<http.Response> post(String path, {Map<String, dynamic>? body, Map<String, String>? headers}) async {
     final uri = Uri.parse('$baseUrl$path');
     final allHeaders = {'Content-Type': 'application/json', ...?headers, ..._authHeaders()};
     return client.post(uri,
@@ -162,7 +162,7 @@ Future<void> apiUploadFile(String path, String fieldName, File file,
 
 Future<Map<String, dynamic>> apiUploadBytes(String path, String fieldName,
     List<int> bytes, String fileName,
-    {Map<String, String>? fields}) async {
+    [Map<String, String>? fields]) async {
   final client = http.Client();
   try {
     final uri = Uri.parse('http://localhost:4000$path');
