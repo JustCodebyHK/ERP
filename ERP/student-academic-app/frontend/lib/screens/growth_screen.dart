@@ -61,13 +61,9 @@ class _GrowthScreenState extends State<GrowthScreen> {
             );
           }
 
-          final attendance = ComponentDetail.fromJson(
-            growth.components['attendance'],
-          );
-          final marks = ComponentDetail.fromJson(growth.components['marks']);
-          final assignments = ComponentDetail.fromJson(
-            growth.components['assignments'],
-          );
+          final attendance = growth.components['attendance']!;
+          final marks = growth.components['marks']!;
+          final assignments = growth.components['assignments']!;
 
           return RefreshIndicator(
             onRefresh: _refresh,
@@ -111,7 +107,7 @@ class _GrowthScreenState extends State<GrowthScreen> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            _getGrowthLabel(growth.growthIndex!),
+                            _getGrowthLabel(growth.growthIndex),
                             style: Theme.of(context).textTheme.bodyLarge
                                 ?.copyWith(color: context.cs.onSurfaceVariant),
                           ),
@@ -131,7 +127,7 @@ class _GrowthScreenState extends State<GrowthScreen> {
                     title: 'Attendance',
                     icon: Icons.verified,
                     score: attendance.score,
-                    weight: attendance.weight,
+                    weight: attendance.weight.toDouble(),
                     color: context.cs.tertiary,
                     onTap: () => _showAttendanceDetails(attendance),
                   ),
@@ -140,7 +136,7 @@ class _GrowthScreenState extends State<GrowthScreen> {
                     title: 'Marks',
                     icon: Icons.grade,
                     score: marks.score,
-                    weight: marks.weight,
+                    weight: marks.weight.toDouble(),
                     color: context.cs.primary,
                     onTap: () => _showMarksDetails(marks),
                   ),
@@ -149,7 +145,7 @@ class _GrowthScreenState extends State<GrowthScreen> {
                     title: 'Assignment Discipline',
                     icon: Icons.assignment_turned_in,
                     score: assignments.score,
-                    weight: assignments.weight,
+                    weight: assignments.weight.toDouble(),
                     color: context.cs.secondary,
                     onTap: () => _showAssignmentsDetails(assignments),
                   ),
@@ -201,7 +197,7 @@ class _GrowthScreenState extends State<GrowthScreen> {
     );
   }
 
-  String _getGrowthLabel(int score) {
+  String _getGrowthLabel(double score) {
     if (score >= 90) return 'Excellent';
     if (score >= 75) return 'Good';
     if (score >= 60) return 'Fair';
@@ -209,7 +205,7 @@ class _GrowthScreenState extends State<GrowthScreen> {
   }
 
   void _showAttendanceDetails(ComponentDetail component) {
-    final details = component.details.cast<Map<String, dynamic>>();
+    final details = component.details!.values.cast<Map<String, dynamic>>();
     final items = details.map((d) => AttendanceDetail.fromJson(d)).toList();
     showModalBottomSheet(
       context: context,
@@ -269,7 +265,7 @@ class _GrowthScreenState extends State<GrowthScreen> {
   }
 
   void _showMarksDetails(ComponentDetail component) {
-    final details = component.details.cast<Map<String, dynamic>>();
+    final details = component.details!.values.cast<Map<String, dynamic>>();
     final items = details.map((d) => MarkDetail.fromJson(d)).toList();
     showModalBottomSheet(
       context: context,
