@@ -481,4 +481,10 @@ function isClassSchedule(value) {
   if (!/^(mon|tue|wed|thu|fri)-[0-9]{2}:[0-9]{2}-[0-9]{2}:[0-9]{2}$/.test(value)) { return { valid: false, error: 'Invalid class schedule' }; } return { valid: true };
 }
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear, isEnrollmentStatus, isMarksRange, isAttendancePercentage, isTimetableSlot, isPlannerEventType, isGrowthMetric, isAnnouncementTarget, isParentChildRelation, isGroupChatMessageLength, isSubmissionTemplateType, isFileUploadBatch, isBulkOperation, isExportFormat, isImportFormat, isReportType, isDashboardWidget, isNotificationType, isAuditAction, isClassSchedule };
+
+
+function isExamType(value) {
+  if (!['midterm','final','quiz','practical','oral'].includes(value)) { return { valid: false, error: 'Invalid exam type' }; } return { valid: true };
+}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear, isEnrollmentStatus, isMarksRange, isAttendancePercentage, isTimetableSlot, isPlannerEventType, isGrowthMetric, isAnnouncementTarget, isParentChildRelation, isGroupChatMessageLength, isSubmissionTemplateType, isFileUploadBatch, isBulkOperation, isExportFormat, isImportFormat, isReportType, isDashboardWidget, isNotificationType, isAuditAction, isClassSchedule, isExamType };
