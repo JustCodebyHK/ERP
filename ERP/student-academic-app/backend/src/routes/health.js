@@ -1,6 +1,7 @@
 ﻿const express = require('express');
 const db = require('../db');
 const os = require('os');
+const pkg = require('../../package.json');
 
 const router = express.Router();
 const startTime = Date.now();
@@ -79,6 +80,7 @@ router.get('/summary', async (req, res) => {
       },
       cpu: { count: cpus.length, load_average: os.loadavg() },
       environment: process.env.NODE_ENV || 'development',
+      version: pkg.version,
       timestamp: new Date().toISOString()
     });
   } catch (err) {
