@@ -103,6 +103,20 @@ Future<Map<String, dynamic>> apiSendGroupMessage(String groupId,
   }
 }
 
+Future<Map<String, dynamic>> apiPost(String path, {Map<String, dynamic>? body}) async {
+  final client = http.Client();
+  try {
+    final uri = Uri.parse('http://localhost:4000$path');
+    final res = await client.post(uri,
+        headers: {'Content-Type': 'application/json'},
+        body: body != null ? jsonEncode(body) : null).timeout(const Duration(seconds: 30));
+    if (res.statusCode >= 400) throw ApiException(res.statusCode, res.body);
+    return res.body.isEmpty ? {} : jsonDecode(res.body) as Map<String, dynamic>;
+  } finally {
+    client.close();
+  }
+}
+
 Future<Map<String, dynamic>> apiGet(String path) async {
   final client = http.Client();
   try {
@@ -127,7 +141,7 @@ Future<Map<String, dynamic>> apiDelete(String path) async {
   }
 }
 
-Future<Map<String, dynamic>> apiPost(String path, [Map<String, dynamic>? body]) async {
+Future<Map<String, dynamic>> apiPost(String path, {Map<String, dynamic>? body}) async {
   final client = http.Client();
   try {
     final uri = Uri.parse('http://localhost:4000$path');
@@ -142,7 +156,7 @@ Future<Map<String, dynamic>> apiPost(String path, [Map<String, dynamic>? body]) 
 }
 
 Future<void> apiUploadFile(String path, String fieldName, File file,
-    String fileName, [Map<String, String>? fields]) async {
+    String fileName, {Map<String, String>? fields}) async {
   final client = http.Client();
   try {
     final uri = Uri.parse('http://localhost:4000$path');
@@ -162,7 +176,7 @@ Future<void> apiUploadFile(String path, String fieldName, File file,
 
 Future<Map<String, dynamic>> apiUploadBytes(String path, String fieldName,
     List<int> bytes, String fileName,
-    [Map<String, String>? fields]) async {
+    {Map<String, String>? fields}) async {
   final client = http.Client();
   try {
     final uri = Uri.parse('http://localhost:4000$path');
