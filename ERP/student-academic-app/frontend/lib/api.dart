@@ -59,3 +59,40 @@ class ApiClient {
     client.close();
   }
 }
+
+/// Group chat API helpers (top-level functions for direct use)
+Future<Map<String, dynamic>> apiGetGroupMessages(String groupId,
+    {String? before, int limit = 50}) async {
+  final client = http.Client();
+  try {
+    final uri = Uri.parse('http://localhost:4000/api/groups/$groupId/messages')
+        .replace(queryParameters: {
+          if (before != null) 'before': before,
+          'limit': limit.toString(),
+        }..removeWhere((k, v) => v == null));
+    final res = await client.get(uri).timeout(const Duration(seconds: 30));
+    if (res.statusCode >= 400) {
+      throw Exception('GET /groups/$groupId/messages failed: ${res.statusCode} ${res.body}');
+    }
+    return jsonDecode(res.body) as Map<String, dynamic>;
+  } finally {
+    client.close();
+  }
+}
+
+Future<Map<String, dynamic>> apiSendGroupMessage(String groupId,
+    {required String content, String type = 'text'}) async {
+  final client = http.Client();
+  try {
+    final uri = Uri.parse('http://localhost:4000/api/groups/$groupId/messages');
+    final res = await client.post(uri,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'content': content, 'type': type})).timeout(const Duration(seconds: 30));
+    if (res.statusCode >= 400) {
+      throw Exception('POST /groups/$groupId/messages failed: ${res.statusCode} ${res.body}');
+    }
+    return jsonDecode(res.body) as Map<String, dynamic>;
+  } finally {
+    client.close();
+  }
+}

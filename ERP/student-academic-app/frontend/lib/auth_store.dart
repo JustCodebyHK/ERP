@@ -40,6 +40,16 @@ class AuthStore {
     return {'raw': raw};
   }
 
+  Map<String, dynamic>? get user {
+    final raw = _storage.readSync(key: _userKey);
+    if (raw == null) return null;
+    try {
+      return {'raw': raw};
+    } catch (_) {
+      return null;
+    }
+  }
+
   Future<bool> get isAuthenticated async {
     final token = await getToken();
     return token != null && token.isNotEmpty;

@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../api.dart';
 import '../auth_store.dart';
 import '../models/group.dart';
+import '../models/group_message.dart';
 import '../services/group_message_watcher.dart';
 import '../services/notification_service.dart';
 import '../widgets/app_theme.dart';

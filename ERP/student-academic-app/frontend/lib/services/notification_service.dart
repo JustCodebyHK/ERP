@@ -72,4 +72,25 @@ class NotificationService {
   Future<void> cancelAll() async {
     await _plugin.cancelAll();
   }
+
+  Future<void> showGroupMessage({
+    required String groupName,
+    required String senderName,
+    required String message,
+  }) async {
+    const android = AndroidNotificationDetails(
+      'group_chat_channel',
+      'Group Chat',
+      channelDescription: 'New messages in group chats',
+      importance: Importance.high,
+      priority: Priority.high,
+    );
+    const details = NotificationDetails(android: android);
+    await _plugin.show(
+      0,
+      'New message in $groupName',
+      '$senderName: $message',
+      details,
+    );
+  }
 }
