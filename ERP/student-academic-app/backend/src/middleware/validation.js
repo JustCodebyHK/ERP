@@ -335,4 +335,6 @@ function isGithubUsername(value) {  if (!/^[a-zA-Z0-9-]{1,39}$/.test(value)) { r
 
 function isLinkedInUrl(value) {  if (!/^https:\/\/www\.linkedin\.com\//.test(value)) { return { valid: false, error: 'Invalid linkedin url' }; } return { valid: true };}
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};};}; };
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody };
+
+
