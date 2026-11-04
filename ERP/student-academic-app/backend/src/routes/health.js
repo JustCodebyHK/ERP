@@ -102,4 +102,8 @@ router.get('/ready', async (req, res) => {
   }
 });
 
+router.get('/live', (req, res) => {
+  res.json({ live: true, uptime_seconds: Math.floor((Date.now() - startTime) / 1000) });
+});
+
 module.exports = router;
