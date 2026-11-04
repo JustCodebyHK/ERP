@@ -1,25 +1,31 @@
-require('dotenv').config();
-const db = require('../src/db');
+﻿const { Pool } = require('pg');
 
-async function check() {
-  const teacher = await db.query('SELECT id, name, email FROM users WHERE email = $1', ['rao@ybit.ac.in']);
-  console.log('Teacher:', teacher.rows[0]);
-  
-  if (!teacher.rows[0]) {
-    console.log('Teacher not found!');
-    return;
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+async function checkTeacher(teacherId, subjectId = null) {
+  const client = await pool.connect();
+  try {
+    let query = 'SELECT * FROM teachers WHERE id = ';
+    const params = [teacherId];
+    if (subjectId) {
+      query += ' AND subject_id = ';
+      params.push(subjectId);
+    }
+    const result = await client.query(query, params);
+    if (result.rows.length === 0) {
+      console.log('Teacher not found or not assigned to subject.');
+    } else {
+      console.log('Teacher verified:', result.rows[0]);
+    }
+  } finally {
+    client.release();
   }
-  
-  const batchSubjects = await db.query('SELECT * FROM batch_subjects WHERE teacher_id = $1', [teacher.rows[0].id]);
-  console.log('Batch Subjects:', batchSubjects.rows);
-  
-  const batches = await db.query('SELECT * FROM batches');
-  console.log('Batches:', batches.rows);
-  
-  const subjects = await db.query('SELECT * FROM subjects');
-  console.log('Subjects:', subjects.rows);
-  
-  process.exit(0);
 }
 
-check().catch(e => { console.error(e); process.exit(1); });
+const teacherId = process.argv[2];
+const subjectId = process.argv[3] || null;
+if (!teacherId) {
+  console.error('Usage: node check-teacher.js <teacher_id> [subject_id]');
+  process.exit(1);
+}
+checkTeacher(teacherId, subjectId).catch(err => { console.error(err); process.exit(1); });
