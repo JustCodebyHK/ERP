@@ -162,7 +162,7 @@ Future<void> apiUploadFile(String path, String fieldName, File file,
 
 Future<Map<String, dynamic>> apiUploadBytes(String path, String fieldName,
     List<int> bytes, String fileName,
-    [Map<String, String>? fields]) async {
+    {Map<String, String>? fields}) async {
   final client = http.Client();
   try {
     final uri = Uri.parse('http://localhost:4000$path');
