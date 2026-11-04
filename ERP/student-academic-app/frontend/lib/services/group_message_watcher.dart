@@ -2,6 +2,7 @@
 
 class GroupMessageWatcher {
   static final GroupMessageWatcher _instance = GroupMessageWatcher._internal();
+  static GroupMessageWatcher get instance => _instance;
   factory GroupMessageWatcher() => _instance;
   GroupMessageWatcher._internal();
 
@@ -27,6 +28,6 @@ class GroupMessageWatcher {
     _timer = null;
   }
 
-  bool get isWatching => _timer != null && !_timer!.isCancelled;
+  bool get isWatching => _timer != null && _timer!.isActive;
   Duration get interval => _interval;
 }

@@ -1,5 +1,6 @@
 ﻿import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -31,14 +32,14 @@ class ApiClient {
 
   Future<http.Response> get(String path, {Map<String, String>? headers}) async {
     final uri = Uri.parse('$baseUrl$path');
-    return client.get(uri, headers: _authHeaders(headers: headers)).timeout(timeout);
+    return client.get(uri, headers: {...?headers, ..._authHeaders()}).timeout(timeout);
   }
 
   Future<http.Response> post(String path,
       {Map<String, String>? headers, dynamic body}) async {
     final uri = Uri.parse('$baseUrl$path');
     return client.post(uri,
-            headers: {'Content-Type': 'application/json', ...?(_authHeaders(headers: headers))},
+            headers: {'Content-Type': 'application/json', ...?headers, ..._authHeaders()},
             body: jsonEncode(body))
         .timeout(timeout);
   }
@@ -47,7 +48,7 @@ class ApiClient {
       {Map<String, String>? headers, dynamic body}) async {
     final uri = Uri.parse('$baseUrl$path');
     return client.put(uri,
-            headers: {'Content-Type': 'application/json', ...?(_authHeaders(headers: headers))},
+            headers: {'Content-Type': 'application/json', ...?headers, ..._authHeaders()},
             body: jsonEncode(body))
         .timeout(timeout);
   }
@@ -55,7 +56,7 @@ class ApiClient {
   Future<http.Response> delete(String path,
       {Map<String, String>? headers}) async {
     final uri = Uri.parse('$baseUrl$path');
-    return client.delete(uri, headers: _authHeaders(headers: headers)).timeout(timeout);
+    return client.delete(uri, headers: {...?headers, ..._authHeaders()}).timeout(timeout);
   }
 
   void dispose() {
@@ -72,7 +73,7 @@ class ApiException implements Exception {
 }
 
 // ============================================================================
-// Group chat API helpers (top-level functions)
+// Group chat API helpers
 // ============================================================================
 Future<Map<String, dynamic>> apiGetGroupMessages(String groupId,
     {String? before, int limit = 50}) async {
@@ -137,15 +138,15 @@ Future<Map<String, dynamic>> apiDelete(String path) async {
   }
 }
 
-Future<Map<String, dynamic>> apiPost(String path, {required Map<String, dynamic> body}) async {
+Future<Map<String, dynamic>> apiPost(String path, {Map<String, dynamic>? body}) async {
   final client = http.Client();
   try {
     final uri = Uri.parse('http://localhost:4000$path');
     final res = await client.post(uri,
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(body)).timeout(const Duration(seconds: 30));
+        body: body != null ? jsonEncode(body) : null).timeout(const Duration(seconds: 30));
     if (res.statusCode >= 400) throw ApiException(res.statusCode, res.body);
-    return jsonDecode(res.body) as Map<String, dynamic>;
+    return res.body.isEmpty ? {} : jsonDecode(res.body) as Map<String, dynamic>;
   } finally {
     client.close();
   }
@@ -192,7 +193,7 @@ Future<Map<String, dynamic>> apiUploadBytes(String path, String fieldName,
   }
 }
 
-Future<bool> ensureStoragePermission(BuildContext context) async {
+Future<bool> ensureStoragePermission() async {
   final status = await Permission.storage.status;
   if (!status.isGranted) {
     final result = await Permission.storage.request();
@@ -227,6 +228,10 @@ Future<Map<String, dynamic>> apiListAssignments(String batchId, String subjectId
   return apiGet('/api/assignments?batch_id=$batchId&subject_id=$subjectId');
 }
 
+Future<Map<String, dynamic>> apiMyAssignmentsCached() async {
+  return apiGet('/api/assignments/my');
+}
+
 Future<Map<String, dynamic>> apiCreateAssignment(Map<String, dynamic> body) async {
   return apiPost('/api/assignments', body: body);
 }
@@ -235,9 +240,15 @@ Future<Map<String, dynamic>> apiAssignmentSubmissions(String assignmentId) async
   return apiGet('/api/assignments/$assignmentId/submissions');
 }
 
-Future<Map<String, dynamic>> apiGradeSubmission(int assignmentId, int studentId, int score) async {
+Future<Map<String, dynamic>> apiGradeSubmission(String assignmentId, String studentId, int score) async {
   return apiPost('/api/assignments/$assignmentId/submissions/$studentId/grade',
       body: {'score': score});
+}
+
+Future<Map<String, dynamic>> apiSubmitAssignment(String assignmentId, File file,
+    String fileName, {String? mimeType}) async {
+  return apiUploadBytes('/api/assignments/$assignmentId/submission', 'file',
+      await file.readAsBytes(), fileName, fields: {'mime_type': mimeType ?? 'application/pdf'});
 }
 
 // ============================================================================
@@ -247,24 +258,45 @@ Future<Map<String, dynamic>> apiListTimetable(String batchId, String subjectId) 
   return apiGet('/api/timetable?batch_id=$batchId&subject_id=$subjectId');
 }
 
+Future<Map<String, dynamic>> apiMyTimetableCached() async {
+  return apiGet('/api/timetable/my');
+}
+
+Future<Map<String, dynamic>> apiTodayTimetableCached() async {
+  return apiGet('/api/timetable/today');
+}
+
 Future<Map<String, dynamic>> apiCreateTimetableEntry(Map<String, dynamic> body) async {
   return apiPost('/api/timetable', body: body);
 }
 
-Future<Map<String, dynamic>> apiUpdateTimetableEntry(int id, Map<String, dynamic> body) async {
+Future<Map<String, dynamic>> apiUpdateTimetableEntry(String id, Map<String, dynamic> body) async {
   return apiPost('/api/timetable/$id', body: body);
 }
 
-Future<Map<String, dynamic>> apiDeleteTimetableEntry(int id) async {
+Future<Map<String, dynamic>> apiDeleteTimetableEntry(String id) async {
   return apiDelete('/api/timetable/$id');
 }
 
 // ============================================================================
 // Announcements API
 // ============================================================================
-Future<Map<String, dynamic>> apiListAnnouncements({int? batchId}) async {
+Future<Map<String, dynamic>> apiListAnnouncements({String? batchId}) async {
   final query = batchId != null ? '?batch_id=$batchId' : '';
   return apiGet('/api/announcements$query');
+}
+
+Future<Map<String, dynamic>> apiListAnnouncementsCached({String? batchId}) async {
+  final query = batchId != null ? '?batch_id=$batchId' : '';
+  return apiGet('/api/announcements$query');
+}
+
+Future<Map<String, dynamic>> apiUnreadAnnouncementsCount() async {
+  return apiGet('/api/announcements/unread_count');
+}
+
+Future<Map<String, dynamic>> apiMarkAnnouncementRead(String id) async {
+  return apiPost('/api/announcements/$id/read', body: {});
 }
 
 Future<Map<String, dynamic>> apiCreateAnnouncement(Map<String, dynamic> body) async {
@@ -282,6 +314,10 @@ Future<Map<String, dynamic>> apiListTemplates() async {
   return apiGet('/api/submission-kit');
 }
 
+Future<Map<String, dynamic>> apiListTemplatesCached() async {
+  return apiGet('/api/submission-kit');
+}
+
 Future<Map<String, dynamic>> apiUploadTemplate(Map<String, dynamic> body,
     File file, String fileName) async {
   return apiUploadBytes('/api/submission-kit', 'file',
@@ -294,8 +330,12 @@ Future<Map<String, dynamic>> apiUploadTemplateBytes(String path,
   return apiUploadBytes(path, fieldName, bytes, fileName, fields: fields);
 }
 
-Future<Map<String, dynamic>> apiSetTemplateCurrent(int id) async {
+Future<Map<String, dynamic>> apiSetTemplateCurrent(String id) async {
   return apiPost('/api/submission-kit/$id/set-current', body: {});
+}
+
+Future<Map<String, dynamic>> apiDownloadTemplate(String id, String destPath) async {
+  return apiDownloadFile('/api/submission-kit/$id/download', destPath);
 }
 
 // ============================================================================
@@ -317,9 +357,13 @@ Future<Map<String, dynamic>> apiGetGroup(String groupId) async {
   return apiGet('/api/groups/$groupId');
 }
 
+Future<Map<String, dynamic>> apiJoinGroup(String inviteCode) async {
+  return apiPost('/api/groups/join', body: {'invite_code': inviteCode});
+}
+
 Future<Map<String, dynamic>> apiAddGroupMember(String groupId,
-    {required String userId, String role = 'member'}) async {
-  return apiPost('/api/groups/$groupId/members', body: {'user_id': userId, 'role': role});
+    {String? email, String role = 'member'}) async {
+  return apiPost('/api/groups/$groupId/members', body: {'email': email, 'role': role});
 }
 
 Future<Map<String, dynamic>> apiRemoveGroupMember(String groupId, String userId) async {
@@ -364,31 +408,6 @@ Future<Map<String, dynamic>> apiChildAnnouncements(String childId) async {
 // ============================================================================
 // Planner API
 // ============================================================================
-Future<Map<String, dynamic>> apiCompletePlannerTask(String taskId) async {
-  return apiPost('/api/planner/tasks/$taskId/complete', body: {});
-}
-
-Future<Map<String, dynamic>> apiCarryForwardPlannerTask(String taskId) async {
-  return apiPost('/api/planner/tasks/$taskId/carry-forward', body: {});
-}
-
-Future<Map<String, dynamic>> apiDeletePlannerTask(String taskId) async {
-  return apiDelete('/api/planner/tasks/$taskId');
-}
-
-// ============================================================================
-// Student Assignments API
-// ============================================================================
-Future<Map<String, dynamic>> apiSubmitAssignmentBytes(String assignmentId,
-    List<int> bytes, String fileName,
-    {String? mimeType}) async {
-  return apiUploadBytes('/api/assignments/$assignmentId/submission', 'file',
-      bytes, fileName, fields: {'mime_type': mimeType ?? 'application/pdf'});
-}
-
-// ============================================================================
-// Planner API (extended)
-// ============================================================================
 Future<Map<String, dynamic>> apiGetPlannerTasks(String date) async {
   return apiGet('/api/planner/tasks?date=$date');
 }
@@ -405,38 +424,16 @@ Future<Map<String, dynamic>> apiCreatePlannerTask(Map<String, dynamic> body) asy
   return apiPost('/api/planner/tasks', body: body);
 }
 
-// ============================================================================
-// Announcements API (extended)
-// ============================================================================
-Future<Map<String, dynamic>> apiListAnnouncementsCached({String? batchId}) async {
-  final query = batchId != null ? '?batch_id=$batchId' : '';
-  return apiGet('/api/announcements$query');
+Future<Map<String, dynamic>> apiCompletePlannerTask(String taskId) async {
+  return apiPost('/api/planner/tasks/$taskId/complete', body: {});
 }
 
-Future<Map<String, dynamic>> apiUnreadAnnouncementsCount() async {
-  return apiGet('/api/announcements/unread_count');
+Future<Map<String, dynamic>> apiCarryForwardPlannerTask(String taskId) async {
+  return apiPost('/api/planner/tasks/$taskId/carry-forward', body: {});
 }
 
-Future<Map<String, dynamic>> apiMarkAnnouncementRead(int id) async {
-  return apiPost('/api/announcements/$id/read', body: {});
-}
-
-// ============================================================================
-// Submission Kit API (extended)
-// ============================================================================
-Future<Map<String, dynamic>> apiListTemplatesCached() async {
-  return apiGet('/api/submission-kit');
-}
-
-Future<Map<String, dynamic>> apiDownloadTemplate(String id, String destPath) async {
-  return apiDownloadFile('/api/submission-kit/$id/download', destPath);
-}
-
-// ============================================================================
-// Groups API (extended)
-// ============================================================================
-Future<Map<String, dynamic>> apiJoinGroup(String inviteCode) async {
-  return apiPost('/api/groups/join', body: {'invite_code': inviteCode});
+Future<Map<String, dynamic>> apiDeletePlannerTask(String taskId) async {
+  return apiDelete('/api/planner/tasks/$taskId');
 }
 
 // ============================================================================
@@ -445,4 +442,3 @@ Future<Map<String, dynamic>> apiJoinGroup(String inviteCode) async {
 Future<Map<String, dynamic>> apiMyGrowth() async {
   return apiGet('/api/growth/my');
 }
-

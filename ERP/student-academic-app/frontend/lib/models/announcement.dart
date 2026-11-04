@@ -1,4 +1,6 @@
-﻿class Announcement {
+﻿import 'package:flutter/material.dart';
+
+class Announcement {
   final int id;
   final String title;
   final String body;
@@ -10,6 +12,8 @@
   final String type;
   final Color? color;
   final IconData? icon;
+  final bool isGlobal;
+  final String? batchName;
 
   Announcement({
     required this.id,
@@ -23,6 +27,8 @@
     this.type = 'info',
     this.color,
     this.icon,
+    this.isGlobal = false,
+    this.batchName,
   });
 
   factory Announcement.fromJson(Map<String, dynamic> json) {
@@ -38,6 +44,8 @@
       type: json['type'] as String? ?? 'info',
       color: json['color'] != null ? Color(int.parse(json['color'].toString().replaceAll('0x', '0xff'))) : null,
       icon: null,
+      isGlobal: json['is_global'] as bool? ?? false,
+      batchName: json['batch_name'] as String?,
     );
   }
 
@@ -53,6 +61,8 @@
       'priority': priority,
       'type': type,
       'color': color?.value,
+      'is_global': isGlobal,
+      'batch_name': batchName,
     };
   }
 
@@ -72,11 +82,11 @@
       type: type ?? this.type,
       color: color,
       icon: icon,
+      isGlobal: isGlobal,
+      batchName: batchName,
     );
   }
 
   @override
   String toString() => 'Announcement(id: $id, title: $title, priority: $priority)';
 }
-
-import 'package:flutter/material.dart';
