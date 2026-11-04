@@ -34,6 +34,21 @@ function extractToken(req) {
   return header.startsWith('Bearer ') ? header.slice(7) : null;
 }
 
+function getTokenExpiry(token) {
+  try {
+    const decoded = jwt.decode(token);
+    return decoded ? decoded.exp : null;
+  } catch {
+    return null;
+  }
+}
+
+function isTokenExpired(token) {
+  const exp = getTokenExpiry(token);
+  if (!exp) return true;
+  return Date.now() >= exp * 1000;
+}
+
 function authRequired(req, res, next) {
   const token = extractToken(req);
   if (!token) {
@@ -41,6 +56,9 @@ function authRequired(req, res, next) {
   }
   if (isBlacklisted(token)) {
     return res.status(401).json({ error: 'Token has been revoked' });
+  }
+  if (isTokenExpired(token)) {
+    return res.status(401).json({ error: 'Token has expired' });
   }
   try {
     req.user = jwt.verify(token, process.env.JWT_SECRET);
@@ -56,6 +74,9 @@ function optionalAuth(req, res, next) {
     return next();
   }
   if (isBlacklisted(token)) {
+    return next();
+  }
+  if (isTokenExpired(token)) {
     return next();
   }
   try {
@@ -87,4 +108,4 @@ function requireAnyRole(...roles) {
   };
 }
 
-module.exports = { authRequired, optionalAuth, requireRole, requireAnyRole, rateLimiter, blacklistToken, isBlacklisted, extractToken };
+module.exports = { authRequired, optionalAuth, requireRole, requireAnyRole, rateLimiter, blacklistToken, isBlacklisted, extractToken, getTokenExpiry, isTokenExpired };
