@@ -123,7 +123,7 @@ Future<Map<String, dynamic>> apiDelete(String path) async {
   }
 }
 
-Future<Map<String, dynamic>> apiPost(String path, [Map<String, dynamic>? body]) async {
+Future<Map<String, dynamic>> apiPost(String path, {Map<String, dynamic>? body}) async {
   final client = http.Client();
   try {
     final uri = Uri.parse('http://localhost:4000$path');
@@ -138,7 +138,7 @@ Future<Map<String, dynamic>> apiPost(String path, [Map<String, dynamic>? body]) 
 }
 
 Future<void> apiUploadFile(String path, String fieldName, File file,
-    String fileName, [Map<String, String>? fields]) async {
+    String fileName, {Map<String, String>? fields}) async {
   final client = http.Client();
   try {
     final uri = Uri.parse('http://localhost:4000$path');
@@ -315,7 +315,16 @@ Future<Map<String, dynamic>> apiSetTemplateCurrent(dynamic id) async {
 }
 
 Future<Map<String, dynamic>> apiDownloadTemplate(dynamic id, String destPath) async {
-  return apiDownloadFile('/api/submission-kit/$id/download', destPath);
+  final client = http.Client();
+  try {
+    final uri = Uri.parse('http://localhost:4000/api/submission-kit/$id/download');
+    final res = await client.get(uri).timeout(const Duration(seconds: 120));
+    if (res.statusCode >= 400) throw ApiException(res.statusCode, res.body);
+    await File(destPath).writeAsBytes(res.bodyBytes);
+    return {};
+  } finally {
+    client.close();
+  }
 }
 
 Future<Map<String, dynamic>> apiGetGroups() async {
