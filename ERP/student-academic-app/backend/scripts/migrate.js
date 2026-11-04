@@ -1,51 +1,34 @@
-require('dotenv').config();
+﻿const { Pool } = require('pg');
 const fs = require('fs');
 const path = require('path');
-const db = require('../src/db');
 
-// Versioned SQL migrations, applied in filename order and recorded so each
-// runs exactly once. The same files can be replayed on any Postgres host,
-// which is what keeps the "move to scalable DB later" path cheap.
-async function migrate() {
-  if (!db.isConfigured()) {
-    console.error('DATABASE_URL is not configured. Set it in .env first.');
-    process.exit(1);
-  }
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
-  await db.query(`
-    CREATE TABLE IF NOT EXISTS _migrations (
-      name TEXT PRIMARY KEY,
-      applied_at TIMESTAMPTZ NOT NULL DEFAULT now()
-    )
-  `);
+const migrationDir = path.join(__dirname, '..', 'migrations');
 
-  const migrationsDir = path.join(__dirname, '..', 'migrations');
-  const files = fs
-    .readdirSync(migrationsDir)
-    .filter((f) => f.endsWith('.sql'))
-    .sort();
-
-  const applied = await db.query('SELECT name FROM _migrations');
-  const done = new Set(applied.rows.map((r) => r.name));
-
-  for (const file of files) {
-    if (done.has(file)) continue;
-    const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf8');
-    console.log(`Applying ${file}...`);
-    await db.query('BEGIN');
-    try {
-      await db.query(sql);
-      await db.query('INSERT INTO _migrations (name) VALUES ($1)', [file]);
-      await db.query('COMMIT');
-    } catch (err) {
-      await db.query('ROLLBACK');
-      console.error(`Failed on ${file}: ${err.message}`);
-      process.exit(1);
+async function runMigrations(dryRun = false) {
+  const files = fs.readdirSync(migrationDir).sort();
+  const client = await pool.connect();
+  try {
+    await client.query(\CREATE TABLE IF NOT EXISTS schema_migrations (version VARCHAR(50) PRIMARY KEY)\);
+    const applied = await client.query('SELECT version FROM schema_migrations');
+    const appliedSet = new Set(applied.rows.map(r => r.version));
+    for (const file of files) {
+      if (appliedSet.has(file)) continue;
+      const sql = fs.readFileSync(path.join(migrationDir, file), 'utf8');
+      if (dryRun) {
+        console.log(\[DRY-RUN] Would run: \\);
+      } else {
+        await client.query(sql);
+        await client.query('INSERT INTO schema_migrations (version) VALUES ()', [file]);
+        console.log(\Applied: \\);
+      }
     }
+    console.log('Migrations complete.');
+  } finally {
+    client.release();
   }
-
-  console.log('Migrations up to date.');
-  process.exit(0);
 }
 
-migrate();
+const dryRun = process.argv.includes('--dry-run');
+runMigrations(dryRun).catch(err => { console.error(err); process.exit(1); });
