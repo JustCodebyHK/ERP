@@ -49,6 +49,15 @@ function isTokenExpired(token) {
   return Date.now() >= exp * 1000;
 }
 
+function getUserIdFromToken(token) {
+  try {
+    const decoded = jwt.decode(token);
+    return decoded ? decoded.sub : null;
+  } catch {
+    return null;
+  }
+}
+
 function authRequired(req, res, next) {
   const token = extractToken(req);
   if (!token) {
@@ -124,4 +133,4 @@ function requireSelfOrRole(allowedRoles, idParam = 'id') {
   };
 }
 
-module.exports = { authRequired, optionalAuth, requireRole, requireAnyRole, requireSelfOrRole, rateLimiter, blacklistToken, isBlacklisted, extractToken, getTokenExpiry, isTokenExpired };
+module.exports = { authRequired, optionalAuth, requireRole, requireAnyRole, requireSelfOrRole, rateLimiter, blacklistToken, isBlacklisted, extractToken, getTokenExpiry, isTokenExpired, getUserIdFromToken };
