@@ -367,4 +367,10 @@ function isAcademicYear(value) {
   const n = Number(value); if (!Number.isInteger(n) || n < 2020 || n > 2030) { return { valid: false, error: 'Invalid academic year' }; } return { valid: true };
 }
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear };
+
+
+function isEnrollmentStatus(value) {
+  if (!['enrolled','dropped','completed','pending'].includes(value)) { return { valid: false, error: 'Invalid enrollment status' }; } return { valid: true };
+}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear, isEnrollmentStatus };
