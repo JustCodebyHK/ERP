@@ -427,4 +427,10 @@ function isSubmissionTemplateType(value) {
   if (!['front_page','index_page','certificate'].includes(value)) { return { valid: false, error: 'Invalid submission template type' }; } return { valid: true };
 }
 
-module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear, isEnrollmentStatus, isMarksRange, isAttendancePercentage, isTimetableSlot, isPlannerEventType, isGrowthMetric, isAnnouncementTarget, isParentChildRelation, isGroupChatMessageLength, isSubmissionTemplateType };
+
+
+function isFileUploadBatch(value) {
+  if (!Array.isArray(value) || value.length < 1 || value.length > 10) { return { valid: false, error: 'Upload batch must have 1-10 files' }; } return { valid: true };
+}
+
+module.exports = { isEmail, isPassword, isName, isRole, isOptionalString, isPositiveInteger, isNonEmptyArray, validateBody, isFileSizeRange, isContentType, isRoleCombination, isBatchSemester, isAcademicYear, isEnrollmentStatus, isMarksRange, isAttendancePercentage, isTimetableSlot, isPlannerEventType, isGrowthMetric, isAnnouncementTarget, isParentChildRelation, isGroupChatMessageLength, isSubmissionTemplateType, isFileUploadBatch };
