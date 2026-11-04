@@ -19,6 +19,7 @@ class NotificationService {
     required String title,
     required String body,
     String type = 'info',
+    DateTime? scheduledAt,
   }) async {
     const android = AndroidNotificationDetails(
       'channel_id',
@@ -28,7 +29,16 @@ class NotificationService {
       priority: Priority.high,
     );
     const details = NotificationDetails(android: android);
-    await _plugin.show(id, title, body, details);
+    if (scheduledAt != null) {
+      await _plugin.zonedSchedule(
+        id, title, body, scheduledAt, details,
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+      );
+    } else {
+      await _plugin.show(id, title, body, details);
+    }
   }
 
   Future<void> showInfoNotification({
