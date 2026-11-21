@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'config.dart';
 
 class ApiClient {
   final String baseUrl;
@@ -12,10 +13,11 @@ class ApiClient {
   String? _authToken;
 
   ApiClient({
-    this.baseUrl = 'http://localhost:4000/api',
+    String? baseUrl,
     this.timeout = const Duration(seconds: 30),
     http.Client? client,
-  }) : client = client ?? http.Client();
+  }) : baseUrl = baseUrl ?? apiBaseUrl,
+       client = client ?? http.Client();
 
   void setAuthToken(String? token) {
     _authToken = token;
@@ -76,7 +78,7 @@ Future<Map<String, dynamic>> apiGetGroupMessages(String groupId,
     {String? before, int limit = 50}) async {
   final client = http.Client();
   try {
-    final uri = Uri.parse('http://localhost:4000/api/groups/$groupId/messages')
+    final uri = Uri.parse('$apiBaseUrl/groups/$groupId/messages')
         .replace(queryParameters: {
           if (before != null) 'before': before,
           'limit': limit.toString(),
@@ -93,7 +95,7 @@ Future<Map<String, dynamic>> apiSendGroupMessage(String groupId,
     {required String content, String type = 'text'}) async {
   final client = http.Client();
   try {
-    final uri = Uri.parse('http://localhost:4000/api/groups/$groupId/messages');
+    final uri = Uri.parse('$apiBaseUrl/groups/$groupId/messages');
     final res = await client.post(uri,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'content': content, 'type': type})).timeout(const Duration(seconds: 30));
@@ -107,7 +109,7 @@ Future<Map<String, dynamic>> apiSendGroupMessage(String groupId,
 Future<Map<String, dynamic>> apiGet(String path) async {
   final client = http.Client();
   try {
-    final uri = Uri.parse('http://localhost:4000$path');
+    final uri = Uri.parse('$apiBaseUrlNoPrefix$path');
     final res = await client.get(uri).timeout(const Duration(seconds: 30));
     if (res.statusCode >= 400) throw ApiException(res.statusCode, res.body);
     return jsonDecode(res.body) as Map<String, dynamic>;
@@ -119,7 +121,7 @@ Future<Map<String, dynamic>> apiGet(String path) async {
 Future<Map<String, dynamic>> apiDelete(String path) async {
   final client = http.Client();
   try {
-    final uri = Uri.parse('http://localhost:4000$path');
+    final uri = Uri.parse('$apiBaseUrlNoPrefix$path');
     final res = await client.delete(uri).timeout(const Duration(seconds: 30));
     if (res.statusCode >= 400) throw ApiException(res.statusCode, res.body);
     return jsonDecode(res.body) as Map<String, dynamic>;
@@ -131,7 +133,7 @@ Future<Map<String, dynamic>> apiDelete(String path) async {
 Future<Map<String, dynamic>> apiPost(String path, {Map<String, dynamic>? body}) async {
   final client = http.Client();
   try {
-    final uri = Uri.parse('http://localhost:4000$path');
+    final uri = Uri.parse('$apiBaseUrlNoPrefix$path');
     final res = await client.post(uri,
         headers: {'Content-Type': 'application/json'},
         body: body != null ? jsonEncode(body) : null).timeout(const Duration(seconds: 30));
@@ -146,7 +148,7 @@ Future<void> apiUploadFile(String path, String fieldName, File file,
     String fileName, {Map<String, String>? fields}) async {
   final client = http.Client();
   try {
-    final uri = Uri.parse('http://localhost:4000$path');
+    final uri = Uri.parse('$apiBaseUrlNoPrefix$path');
     final request = http.MultipartRequest('POST', uri)
       ..files.add(await http.MultipartFile.fromPath(fieldName, file.path,
           filename: fileName))
@@ -166,7 +168,7 @@ Future<Map<String, dynamic>> apiUploadBytes(String path, String fieldName,
     {Map<String, String>? fields}) async {
   final client = http.Client();
   try {
-    final uri = Uri.parse('http://localhost:4000$path');
+    final uri = Uri.parse('$apiBaseUrlNoPrefix$path');
     final request = http.MultipartRequest('POST', uri)
       ..files.add(http.MultipartFile.fromBytes(fieldName, bytes, filename: fileName))
       ..fields.addAll(fields ?? {});
@@ -200,7 +202,7 @@ Future<String> resolveDownloadDirectory(String folderName) async {
 Future<void> apiDownloadFile(String url, String destPath) async {
   final client = http.Client();
   try {
-    final uri = Uri.parse(url.startsWith('http') ? url : 'http://localhost:4000$url');
+    final uri = Uri.parse(url.startsWith('http') ? url : '$apiBaseUrlNoPrefix$url');
     final res = await client.get(uri).timeout(const Duration(seconds: 120));
     if (res.statusCode >= 400) throw ApiException(res.statusCode, res.body);
     await File(destPath).writeAsBytes(res.bodyBytes);
@@ -322,7 +324,7 @@ Future<Map<String, dynamic>> apiSetTemplateCurrent(dynamic id) async {
 Future<Map<String, dynamic>> apiDownloadTemplate(dynamic id, String destPath) async {
   final client = http.Client();
   try {
-    final uri = Uri.parse('http://localhost:4000/api/submission-kit/$id/download');
+    final uri = Uri.parse('$apiBaseUrl/submission-kit/$id/download');
     final res = await client.get(uri).timeout(const Duration(seconds: 120));
     if (res.statusCode >= 400) throw ApiException(res.statusCode, res.body);
     await File(destPath).writeAsBytes(res.bodyBytes);
