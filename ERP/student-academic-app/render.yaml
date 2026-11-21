@@ -5,6 +5,7 @@
     plan: free
     rootDir: ERP/student-academic-app/backend
     buildCommand: npm install
+    preDeployCommand: npm run migrate
     startCommand: node src/index.js
     autoDeploy: true
     envVars:
