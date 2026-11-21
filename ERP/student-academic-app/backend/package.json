@@ -11,7 +11,8 @@
   },
   "keywords": ["student", "academic", "erp", "express", "postgresql", "jwt"],
   "author": "Student Academic App Team",
-  "license": "MIT",\n  "engines": { "node": ">=18.0.0" },
+  "license": "MIT",
+  "engines": { "node": ">=18.0.0" },
   "type": "commonjs",
   "dependencies": {
     "bcryptjs": "^3.0.3",
