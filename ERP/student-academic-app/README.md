@@ -90,6 +90,16 @@ cd frontend
 flutter pub get
 flutter run
 
+For an Android emulator, the app connects to the backend on the host through
+`http://10.0.2.2:4000` by default. Start PostgreSQL and the backend first (see
+Backend Setup). On a physical phone, use your computer's LAN IP instead:
+
+```sh
+flutter run --dart-define=API_BASE_URL=http://YOUR_COMPUTER_LAN_IP:4000
+```
+
+For a hosted API, pass its root URL the same way (without `/api`).
+
 ## Environment Variables
 
 | Variable | Description | Example |
