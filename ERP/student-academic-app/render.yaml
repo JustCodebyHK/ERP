@@ -14,17 +14,8 @@
       - key: PORT
         value: "4000"
       - key: DATABASE_URL
-        fromDatabase:
-          name: academic-erp-db
-          property: connectionString
+        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: CORS_ORIGIN
         value: "https://your-app-domain.com"
-
-databases:
-  - name: academic-erp-db
-    databaseName: academic_erp
-    user: academic_user
-    plan: free
-    postgresMajorVersion: 16
