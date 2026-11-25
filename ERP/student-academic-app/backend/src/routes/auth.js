@@ -9,6 +9,13 @@ const router = express.Router();
 const ROLES = ['student', 'teacher', 'parent'];
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Debug route to test request body parsing
+router.post('/debug', (req, res) => {
+  console.log('DEBUG /auth/debug - body:', req.body);
+  console.log('DEBUG /auth/debug - headers:', req.headers);
+  res.json({ received: req.body });
+});
+
 // Ensure email verification columns exist (idempotent, safe on every start).
 // Adds email_verified and verification_token to users if absent.
 async function ensureSchema() {
