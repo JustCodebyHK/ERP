@@ -14,8 +14,8 @@
       - key: PORT
         value: "4000"
       - key: DATABASE_URL
-        sync: false
+        value: "postgresql://postgres:j8CgSV7XdcYUSgpE@db.jzcsmpzzevxicignlizu.supabase.co:5432/postgres"
       - key: JWT_SECRET
         generateValue: true
       - key: CORS_ORIGIN
-        value: "https://your-app-domain.com"
+        value: "*"
