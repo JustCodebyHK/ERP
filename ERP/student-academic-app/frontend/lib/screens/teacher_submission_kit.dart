@@ -74,15 +74,14 @@ class _TeacherSubmissionKitScreenState extends State<TeacherSubmissionKitScreen>
                 const SizedBox(height: 12),
                 FilledButton.icon(
                   onPressed: () async {
-                    final result = await FilePicker.platform.pickFiles(
+                    final result = await FilePicker.pickFiles(
                       type: FileType.custom,
                       allowedExtensions: ['pdf', 'doc', 'docx'],
-                      withData: true,
                     );
-                    if (result != null && result.files.isNotEmpty) {
+                    if (result != null && result.isNotEmpty) {
                       setState(() {
-                        pickedFile = result.files.single;
-                        pickedName = result.files.single.name;
+                        pickedFile = result.single;
+                        pickedName = result.single.name;
                       });
                     }
                   },
@@ -110,19 +109,20 @@ FilledButton(
                             pickedName!,
                             mimeType: mimeType,
                           );
-                        } else if (pickedFile!.bytes != null) {
+                        } else {
+                          // Read bytes from path if available
+                          final file = File(pickedFile!.path!);
+                          final bytes = await file.readAsBytes();
                           await apiUploadTemplateBytes(
                             '/api/submission-kit',
                             'file',
-                            pickedFile!.bytes!,
+                            bytes,
                             pickedName!,
                             fields: {
                               'type': type,
                               'title': titleCtrl.text.trim(),
                             },
                           );
-                        } else {
-                          throw Exception('Unable to read file');
                         }
                         if (!ctx.mounted) return;
                         Navigator.pop(ctx);

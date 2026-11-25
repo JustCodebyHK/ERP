@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.studentacademic.student_academic_app"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

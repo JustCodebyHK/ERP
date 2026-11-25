@@ -1,4 +1,5 @@
-﻿const { Pool } = require('pg');
+require('dotenv').config();
+const { Pool } = require('pg');
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
@@ -23,4 +24,6 @@ async function seed(count = 5) {
 }
 
 const count = parseInt(process.argv.find(a => a.startsWith('--count='))?.split('=')[1]) || 5;
-seed(count).catch(err => { console.error(err); process.exit(1); });
+seed(count)
+  .catch(err => { console.error(err); process.exitCode = 1; })
+  .finally(() => pool.end());

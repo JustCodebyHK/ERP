@@ -321,24 +321,24 @@ class _StudentAssignmentDetailScreenState
   }
 
   Future<void> _pickAndSubmit() async {
-    final result = await FilePicker.platform.pickFiles(
+    final result = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'txt', 'jpg', 'jpeg', 'png'],
-      withData: true,
     );
-    if (result == null) return;
+    if (result == null || result.isEmpty) return;
 
-    final pickedFile = result.files.single;
+    final pickedFile = result.single;
     setState(() => _submitting = true);
     try {
       final mimeType = _getMimeType(pickedFile.name);
       if (pickedFile.path != null) {
         final file = File(pickedFile.path!);
         await apiSubmitAssignment(_assignment.id, file, pickedFile.name, mimeType: mimeType);
-      } else if (pickedFile.bytes != null) {
-        await apiSubmitAssignmentBytes(_assignment.id, pickedFile.bytes!, pickedFile.name, mimeType: mimeType);
       } else {
-        throw Exception('Unable to read file');
+        // Read bytes from path
+        final file = File(pickedFile.path!);
+        final bytes = await file.readAsBytes();
+        await apiSubmitAssignmentBytes(_assignment.id, bytes, pickedFile.name, mimeType: mimeType);
       }
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

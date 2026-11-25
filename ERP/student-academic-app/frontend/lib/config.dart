@@ -4,11 +4,13 @@ import 'package:flutter/foundation.dart';
 // flutter run --dart-define=API_BASE_URL=https://your-app.onrender.com
 const String _configuredApiRoot = String.fromEnvironment('API_BASE_URL');
 
-final String apiBaseUrlNoPrefix = () {
-  if (_configuredApiRoot.isEmpty) {
-    throw StateError('API_BASE_URL not configured. Pass --dart-define=API_BASE_URL=https://your-app.onrender.com');
-  }
-  return _configuredApiRoot.replaceFirst(RegExp(r'/$'), '');
-}();
+String get _defaultApiRoot {
+  // Default to production server URL
+  return 'https://academic-erp-api-u026.onrender.com';
+}
+
+final String apiBaseUrlNoPrefix =
+    (_configuredApiRoot.isEmpty ? _defaultApiRoot : _configuredApiRoot)
+        .replaceFirst(RegExp(r'/$'), '');
 
 final String apiBaseUrl = '$apiBaseUrlNoPrefix/api';

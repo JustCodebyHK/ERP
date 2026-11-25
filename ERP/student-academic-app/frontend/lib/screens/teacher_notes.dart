@@ -127,7 +127,7 @@ class _TeacherNotesScreenState extends State<TeacherNotesScreen> {
   }
 
   Future<void> _pickAndUpload() async {
-    final result = await FilePicker.platform.pickFiles(
+    final result = await FilePicker.pickFiles(
       type: FileType.custom,
       allowedExtensions: [
         'pdf',
@@ -140,11 +140,10 @@ class _TeacherNotesScreenState extends State<TeacherNotesScreen> {
         'jpeg',
         'png',
       ],
-      withData: true,
     );
-    if (result == null) return;
+    if (result == null || result.isEmpty) return;
 
-    final pickedFile = result.files.single;
+    final pickedFile = result.single;
     setState(() => _uploading = true);
     try {
       final mimeType = _getMimeType(pickedFile.name);
@@ -152,17 +151,16 @@ class _TeacherNotesScreenState extends State<TeacherNotesScreen> {
         final file = File(pickedFile.path!);
         await apiUploadFile('/api/notes', 'file', file, pickedFile.name,
             fields: {'subject_id': widget.subjectId, 'title': pickedFile.name});
-      } else if (pickedFile.bytes != null) {
+      } else {
+        // Read bytes from path
+        final file = File(pickedFile.path!);
+        final bytes = await file.readAsBytes();
         await apiUploadBytes(
           '/api/notes',
           'file',
-          pickedFile.bytes!,
+          bytes,
           pickedFile.name,
           fields: {'subject_id': widget.subjectId, 'title': pickedFile.name},
-        );
-      } else {
-        throw Exception(
-          'Unable to read file. On web, ensure file_picker_web is properly configured.',
         );
       }
       if (!mounted) return;
