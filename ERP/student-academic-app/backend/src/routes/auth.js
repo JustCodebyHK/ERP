@@ -10,10 +10,23 @@ const ROLES = ['student', 'teacher', 'parent'];
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Debug route to test request body parsing
-router.post('/debug', (req, res) => {
+router.post('/debug', async (req, res) => {
   console.log('DEBUG /auth/debug - body:', req.body);
   console.log('DEBUG /auth/debug - headers:', req.headers);
-  res.json({ received: req.body });
+  try {
+    const bcrypt = require('bcryptjs');
+    const hash = await bcrypt.hash('test', 10);
+    console.log('bcrypt works:', hash);
+    
+    const jwt = require('jsonwebtoken');
+    const token = jwt.sign({ test: 'value' }, process.env.JWT_SECRET || 'test-secret', { expiresIn: '15m' });
+    console.log('jwt works:', token);
+    
+    res.json({ received: req.body, bcrypt: 'ok', jwt: 'ok' });
+  } catch (e) {
+    console.error('DEBUG error:', e);
+    res.status(500).json({ error: e.message });
+  }
 });
 
 // Ensure email verification columns exist (idempotent, safe on every start).
