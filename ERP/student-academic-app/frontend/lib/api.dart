@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'config.dart';
+import 'auth_store.dart';
 
 class ApiClient {
   final String baseUrl;
@@ -76,6 +77,9 @@ class ApiException implements Exception {
 
 Future<Map<String, dynamic>> apiGetGroupMessages(String groupId,
     {String? before, int limit = 50}) async {
+  final token = await AuthStore().getToken();
+  final headers = <String, String>{};
+  if (token != null) headers['Authorization'] = 'Bearer $token';
   final client = http.Client();
   try {
     final uri = Uri.parse('$apiBaseUrl/groups/$groupId/messages')
@@ -83,7 +87,7 @@ Future<Map<String, dynamic>> apiGetGroupMessages(String groupId,
           if (before != null) 'before': before,
           'limit': limit.toString(),
         }..removeWhere((k, v) => v == null));
-    final res = await client.get(uri).timeout(const Duration(seconds: 30));
+    final res = await client.get(uri, headers: headers).timeout(const Duration(seconds: 30));
     if (res.statusCode >= 400) throw ApiException(res.statusCode, res.body);
     return jsonDecode(res.body) as Map<String, dynamic>;
   } finally {
@@ -93,11 +97,14 @@ Future<Map<String, dynamic>> apiGetGroupMessages(String groupId,
 
 Future<Map<String, dynamic>> apiSendGroupMessage(String groupId,
     {required String content, String type = 'text'}) async {
+  final token = await AuthStore().getToken();
+  final headers = <String, String>{'Content-Type': 'application/json'};
+  if (token != null) headers['Authorization'] = 'Bearer $token';
   final client = http.Client();
   try {
     final uri = Uri.parse('$apiBaseUrl/groups/$groupId/messages');
     final res = await client.post(uri,
-        headers: {'Content-Type': 'application/json'},
+        headers: headers,
         body: jsonEncode({'content': content, 'type': type})).timeout(const Duration(seconds: 30));
     if (res.statusCode >= 400) throw ApiException(res.statusCode, res.body);
     return jsonDecode(res.body) as Map<String, dynamic>;
@@ -107,10 +114,13 @@ Future<Map<String, dynamic>> apiSendGroupMessage(String groupId,
 }
 
 Future<Map<String, dynamic>> apiGet(String path) async {
+  final token = await AuthStore().getToken();
+  final headers = <String, String>{};
+  if (token != null) headers['Authorization'] = 'Bearer $token';
   final client = http.Client();
   try {
     final uri = Uri.parse('$apiBaseUrlNoPrefix$path');
-    final res = await client.get(uri).timeout(const Duration(seconds: 30));
+    final res = await client.get(uri, headers: headers).timeout(const Duration(seconds: 30));
     if (res.statusCode >= 400) throw ApiException(res.statusCode, res.body);
     return jsonDecode(res.body) as Map<String, dynamic>;
   } finally {
@@ -119,10 +129,13 @@ Future<Map<String, dynamic>> apiGet(String path) async {
 }
 
 Future<Map<String, dynamic>> apiDelete(String path) async {
+  final token = await AuthStore().getToken();
+  final headers = <String, String>{};
+  if (token != null) headers['Authorization'] = 'Bearer $token';
   final client = http.Client();
   try {
     final uri = Uri.parse('$apiBaseUrlNoPrefix$path');
-    final res = await client.delete(uri).timeout(const Duration(seconds: 30));
+    final res = await client.delete(uri, headers: headers).timeout(const Duration(seconds: 30));
     if (res.statusCode >= 400) throw ApiException(res.statusCode, res.body);
     return jsonDecode(res.body) as Map<String, dynamic>;
   } finally {
@@ -131,11 +144,14 @@ Future<Map<String, dynamic>> apiDelete(String path) async {
 }
 
 Future<Map<String, dynamic>> apiPost(String path, {Map<String, dynamic>? body}) async {
+  final token = await AuthStore().getToken();
+  final headers = <String, String>{'Content-Type': 'application/json'};
+  if (token != null) headers['Authorization'] = 'Bearer $token';
   final client = http.Client();
   try {
     final uri = Uri.parse('$apiBaseUrlNoPrefix$path');
     final res = await client.post(uri,
-        headers: {'Content-Type': 'application/json'},
+        headers: headers,
         body: body != null ? jsonEncode(body) : null).timeout(const Duration(seconds: 30));
     if (res.statusCode >= 400) throw ApiException(res.statusCode, res.body);
     return res.body.isEmpty ? {} : jsonDecode(res.body) as Map<String, dynamic>;
@@ -146,10 +162,14 @@ Future<Map<String, dynamic>> apiPost(String path, {Map<String, dynamic>? body}) 
 
 Future<void> apiUploadFile(String path, String fieldName, File file,
     String fileName, {Map<String, String>? fields}) async {
+  final token = await AuthStore().getToken();
+  final headers = <String, String>{};
+  if (token != null) headers['Authorization'] = 'Bearer $token';
   final client = http.Client();
   try {
     final uri = Uri.parse('$apiBaseUrlNoPrefix$path');
     final request = http.MultipartRequest('POST', uri)
+      ..headers.addAll(headers)
       ..files.add(await http.MultipartFile.fromPath(fieldName, file.path,
           filename: fileName))
       ..fields.addAll(fields ?? {});
@@ -166,10 +186,14 @@ Future<void> apiUploadFile(String path, String fieldName, File file,
 Future<Map<String, dynamic>> apiUploadBytes(String path, String fieldName,
     List<int> bytes, String fileName,
     {Map<String, String>? fields}) async {
+  final token = await AuthStore().getToken();
+  final headers = <String, String>{};
+  if (token != null) headers['Authorization'] = 'Bearer $token';
   final client = http.Client();
   try {
     final uri = Uri.parse('$apiBaseUrlNoPrefix$path');
     final request = http.MultipartRequest('POST', uri)
+      ..headers.addAll(headers)
       ..files.add(http.MultipartFile.fromBytes(fieldName, bytes, filename: fileName))
       ..fields.addAll(fields ?? {});
     final res = await request.send().timeout(const Duration(seconds: 60));

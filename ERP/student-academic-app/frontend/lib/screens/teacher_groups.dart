@@ -527,7 +527,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                           ),
                           const SizedBox(height: 12),
                           SizedBox(
-                            height: 90,
+                            height: 160,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               itemCount: members.length,
