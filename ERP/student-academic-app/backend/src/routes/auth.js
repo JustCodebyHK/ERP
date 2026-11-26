@@ -5,7 +5,7 @@ const crypto = require('crypto');
 const db = require('../db');
 const { authRequired } = require('../middleware/auth');
 
-console.log('AUTH ROUTE LOADED - JWT_SECRET:', process.env.JWT_SECRET ? 'SET' : 'NOT SET');
+console.log('AUTH ROUTE LOADED - JWT_SECRET:', process.env.JWT_SECRET ? 'SET (len=' + process.env.JWT_SECRET.length + ')' : 'NOT SET');
 
 const router = express.Router();
 const ROLES = ['student', 'teacher', 'parent'];
