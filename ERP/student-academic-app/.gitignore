@@ -8,3 +8,7 @@ npm-debug.log*
 .coverage/
 *.apk
 .DS_Store
+
+# IDE directories
+.idea/
+.vscode/
