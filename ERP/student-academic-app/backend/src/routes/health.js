@@ -6,6 +6,16 @@ const pkg = require('../../package.json');
 const router = express.Router();
 const startTime = Date.now();
 
+router.get('/test-db', async (req, res) => {
+  try {
+    const result = await db.query('SELECT 1 AS ok, current_database() as db, current_user as user');
+    res.json({ db: 'connected', result: result.rows[0] });
+  } catch (e) {
+    console.error('DB test error:', e);
+    res.status(500).json({ error: e.message, stack: e.stack });
+  }
+});
+
 router.get('/', async (req, res) => {
   if (!db.isConfigured()) {
     return res.json({ api: 'ok', db: 'not configured' });
