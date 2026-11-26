@@ -36,6 +36,7 @@ student-academic-app/
 │   │   ├── index.js          # Express app entry point
 │   │   ├── db.js             # PostgreSQL connection pool
 │   │   ├── middleware/
+│   │   │   ├── auth.js       # JWT auth middleware (authRequired)
 │   │   │   ├── validation.js # Input validation middleware
 │   │   │   ├── fileValidation.js  # Magic-bytes file validator
 │   │   │   └── logger.js     # Error logger
@@ -51,6 +52,12 @@ student-academic-app/
 │   ├── package.json
 │   └── .env.example
 ├── frontend/                 # Flutter mobile app
+│   ├── lib/
+│   │   ├── api.dart          # HTTP client with JWT Bearer token support
+│   │   ├── auth_store.dart   # Secure token storage
+│   │   ├── config.dart       # API base URL configuration
+│   │   └── screens/
+│   │       └── teacher_groups.dart  # Group Details screen
 ├── security-audit/           # Security audit reports
 ├── docker-compose.yml        # Local Postgres for development
 ├── render.yaml               # Render deployment config
@@ -98,51 +105,28 @@ Backend Setup). On a physical phone, use your computer's LAN IP instead:
 flutter run --dart-define=API_BASE_URL=http://YOUR_COMPUTER_LAN_IP:4000
 ```
 
-For a hosted API, pass its root URL the same way (without `/api`).
+### Authentication
 
-## Environment Variables
+The app requires a valid JWT Bearer token for all protected API endpoints.
+The authentication flow is:
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| DATABASE_URL | PostgreSQL connection string | postgres://user:pass@localhost:5432/db |
-| JWT_SECRET | Secret for signing JWTs | random-32-char-string |
-| CORS_ORIGIN | Allowed CORS origin | http://localhost:3000 |
-| NODE_ENV | Environment | development or production |
-| PORT | Server port | 4000 |
+1. **Register** — POST `/api/auth/register` (email must end with `@ybit.ac.in`, password ≥ 12 chars)
+2. **Verify email** — GET `/api/auth/verify-email?token=<token>`
+3. **Login** — POST `/api/auth/login` → returns `token` and `refreshToken`
+4. The token is stored in secure storage and attached to every subsequent API request as `Authorization: Bearer <token>`
 
-## API Overview
+### Android Emulator Troubleshooting
 
-### Auth
-- POST /api/auth/register – Create account (email verification required)
-- POST /api/auth/login – Sign in (verified emails only)
-- GET /api/auth/verify-email?token= – Verify email
-- POST /api/auth/resend-verification – Re-send verification token
-- POST /api/auth/refresh – Refresh access token
-- GET /api/auth/me – Current user profile
+**ADB authorization:** On first launch, accept the ADB authorization dialog on the emulator screen.
 
-### Groups
-- POST /api/groups – Create group (teacher)
-- GET /api/groups/:id/members – List members
-- POST /api/groups/:id/members – Add member (owner/admin)
-- PUT/PATCH /api/groups/:id/members/:userId – Update member role
+**Gradle build failure:** If Gradle fails with "Several environment variables and/or system properties contain different paths to the Android Preferences folder," unset `ANDROID_PREFS_ROOT`:
 
-### Assignments / Notes / Submission Kit
-- File upload with magic-bytes validation
-- Download with path fallback
-- Role-based access control
+```powershell
+$env:ANDROID_PREFS_ROOT = $null
+```
 
-## Security
+**Flutter run:** If `flutter run` fails to connect to the device, launch the emulator first:
 
-- JWT access tokens expire in 15 minutes; refresh tokens in 7 days
-- Passwords hashed with bcrypt (12 rounds)
-- Rate limiting: 10 requests per IP per 60 seconds on auth routes
-- File uploads validated by magic bytes, not just MIME type
-- Security headers: X-Content-Type-Options, X-Frame-Options, Referrer-Policy
-
-## License
-
-MIT License – see LICENSE for details.
-
-## Security Audit
-
-See the security-audit/ directory for security findings and validation reports.
+```sh
+flutter emulators --launch Medium_Phone_API_36.0
+```
