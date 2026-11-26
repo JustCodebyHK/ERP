@@ -12,9 +12,8 @@ const ROLES = ['student', 'teacher', 'parent'];
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Debug route to test request body parsing
-router.post('/debug', async (req, res) => {
-  console.log('DEBUG /auth/debug - body:', req.body);
-  console.log('DEBUG /auth/debug - headers:', req.headers);
+router.get('/debug', async (req, res) => {
+  console.log('DEBUG /auth/debug - GET request');
   try {
     const bcrypt = require('bcryptjs');
     const hash = await bcrypt.hash('test', 10);
@@ -24,10 +23,21 @@ router.post('/debug', async (req, res) => {
     const token = jwt.sign({ test: 'value' }, process.env.JWT_SECRET || 'test-secret', { expiresIn: '15m' });
     console.log('jwt works:', token);
     
-    res.json({ received: req.body, bcrypt: 'ok', jwt: 'ok' });
+    // Test database connection
+    const db = require('../db');
+    const result = await db.query('SELECT 1 AS ok');
+    console.log('db works:', result.rows[0]);
+    
+    res.json({ 
+      bcrypt: 'ok', 
+      jwt: 'ok', 
+      db: 'connected',
+      jwtSecretSet: !!process.env.JWT_SECRET,
+      jwtSecretLength: process.env.JWT_SECRET ? process.env.JWT_SECRET.length : 0
+    });
   } catch (e) {
     console.error('DEBUG error:', e);
-    res.status(500).json({ error: e.message });
+    res.status(500).json({ error: e.message, stack: e.stack });
   }
 });
 
